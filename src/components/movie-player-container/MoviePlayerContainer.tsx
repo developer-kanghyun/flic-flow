@@ -1,12 +1,17 @@
 import React from "react";
 import { StyledMoviePlayerContainer } from "./styles";
 import { MoviePlayer } from "@components/index";
+import Movie from "@src/types/Movie";
 
-const MoviePlayerContainer = () => {
+interface MoviePlayerContainerProps {
+  movieId: number;
+  movie: Movie;
+}
+
+const MoviePlayerContainer = ({ movieId, movie }: MoviePlayerContainerProps) => {
   return (
     <StyledMoviePlayerContainer>
-      <div>영화그림</div>
-      <MoviePlayer />
+      <MoviePlayer movieId={movieId} movie={movie} />
     </StyledMoviePlayerContainer>
   );
 };

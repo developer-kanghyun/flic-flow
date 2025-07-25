@@ -10,13 +10,13 @@ interface LayoutsProps {
 const Layouts = (props: LayoutsProps) => {
   const { children } = props;
   const location = useLocation();
-  const isMainPage = "/Main" === "/"; // Main 페이지 경로
+  const isMainPage = location.pathname === "/"; // Main 페이지 경로
   return (
     <>
       <StyledLayouts>
         <Header /> {/* 공통.. 컴포넌트!!! */}
         {!isMainPage && (
-          <Accordion title="현재 이용중인 서비스">
+          <Accordion title="서비스 목록">
             <FilterList />
           </Accordion>
         )}

@@ -1,11 +1,16 @@
 import React from "react";
 import { StyledMovieInfoContainer } from "./styles";
 import { MovieInfo } from "@components/index";
+import Movie from "@src/types/Movie";
 
-const MovieInfoContainer = () => {
+interface MovieInfoContainerProps {
+  movie: Movie;
+}
+
+const MovieInfoContainer = ({ movie }: MovieInfoContainerProps) => {
   return (
     <StyledMovieInfoContainer>
-      <MovieInfo />
+      <MovieInfo movie={movie} />
     </StyledMovieInfoContainer>
   );
 };

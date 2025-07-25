@@ -1,26 +1,37 @@
 import { create } from 'zustand';
 
+interface Genre {
+  id: number;
+  name: string;
+}
+
 interface FilterState {
   selectedOtts: number[];
   selectedGenres: number[];
-  selectedKeywords: number[]; // New: selectedKeywords state
+  selectedKeywords: number[];
   activeTag: string | null;
+  movieGenres: Genre[];
+  tvGenres: Genre[];
   setOtts: (otts: number[]) => void;
   setGenres: (genres: number[]) => void;
-  setKeywords: (keywords: number[]) => void; // New: setKeywords action
+  setKeywords: (keywords: number[]) => void;
   setActiveTag: (tag: string | null) => void;
+  setMovieGenres: (genres: Genre[]) => void;
+  setTvGenres: (genres: Genre[]) => void;
 }
 
 const getInitialState = () => {
   const storedOtts = localStorage.getItem('selectedOtts');
   const storedGenres = localStorage.getItem('selectedGenres');
-  const storedKeywords = localStorage.getItem('selectedKeywords'); // New: storedKeywords
+  const storedKeywords = localStorage.getItem('selectedKeywords');
   const storedActiveTag = localStorage.getItem('activeTag');
   return {
     selectedOtts: storedOtts ? JSON.parse(storedOtts) : [],
     selectedGenres: storedGenres ? JSON.parse(storedGenres) : [],
-    selectedKeywords: storedKeywords ? JSON.parse(storedKeywords) : [], // New: load storedKeywords
+    selectedKeywords: storedKeywords ? JSON.parse(storedKeywords) : [],
     activeTag: storedActiveTag || 'all',
+    movieGenres: [],
+    tvGenres: [],
   };
 };
 
@@ -34,7 +45,7 @@ export const useFilterStore = create<FilterState>((set) => ({
     set({ selectedGenres: genres });
     localStorage.setItem('selectedGenres', JSON.stringify(genres));
   },
-  setKeywords: (keywords) => { // New: setKeywords action implementation
+  setKeywords: (keywords) => {
     set({ selectedKeywords: keywords });
     localStorage.setItem('selectedKeywords', JSON.stringify(keywords));
   },
@@ -46,4 +57,6 @@ export const useFilterStore = create<FilterState>((set) => ({
       localStorage.removeItem('activeTag');
     }
   },
+  setMovieGenres: (genres) => set({ movieGenres: genres }),
+  setTvGenres: (genres) => set({ tvGenres: genres }),
 }));

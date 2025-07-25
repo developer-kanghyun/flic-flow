@@ -1,11 +1,13 @@
 import React from "react";
-import { FilterList } from "@components/index";
+import { FilterList, Accordion } from "@components/index";
 import { StyledFilterContainer } from "./styles";
 
 const FilterContainer = () => {
   return (
     <StyledFilterContainer>
-      <FilterList />
+      <Accordion title="OTT 플랫폼">
+        <FilterList />
+      </Accordion>
     </StyledFilterContainer>
   );
 };

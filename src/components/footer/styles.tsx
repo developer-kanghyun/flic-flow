@@ -1,9 +1,12 @@
 import { styled } from "styled-components";
-import { BACKGROUND_COLOR, MAIN_POINT_COLOR } from "@consts/colors";
 
-export const StyledFooter = styled.div`
-  background-color: ${BACKGROUND_COLOR};
+export const StyledFooter = styled.footer`
+  background-color: ${({ theme }) => theme.colors.background};
+  color: ${({ theme }) => theme.colors.text};
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9em;
+  width: 100%;
   box-sizing: border-box;
-  font-family: sans-serif;
-  height: 5vh;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 `;

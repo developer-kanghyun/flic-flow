@@ -8,8 +8,28 @@ import {
   Test,
 } from "@pages/index";
 import { Layouts } from "@components/index";
+import { useEffect } from "react";
+import { getMovieGenres, getTvGenres } from "./api/tmdbApi";
+import { useFilterStore } from "./store/filterStore";
 
 const App = () => {
+  const { setMovieGenres, setTvGenres } = useFilterStore();
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const movieGenres = await getMovieGenres();
+        const tvGenres = await getTvGenres();
+        setMovieGenres(movieGenres);
+        setTvGenres(tvGenres);
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
+
+    fetchGenres();
+  }, [setMovieGenres, setTvGenres]);
+
   return (
     <Routes>
       <Route

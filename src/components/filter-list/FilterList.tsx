@@ -1,68 +1,76 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Filter } from "@components/index";
 import { StyledFilterList } from "./styles";
+import { useFilterStore } from "@src/store/filterStore";
+import { getWatchProviders } from "@src/api/tmdbApi";
+
+interface WatchProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+}
+
+const POPULAR_KR_OTTS = [
+  "Netflix",
+  "Watcha",
+  "Disney Plus",
+  "wavve",
+  "Coupang Play",
+  "TVING",
+  "Apple TV+",
+];
 
 const FilterList = () => {
-  const [filters, setFilters] = useState([
-    {
-      key: "netflix",
-      label: "넷플릭스",
-      // imgOn: netflixOn,
-      // imgOff: netflixOff,
-      active: false,
-    },
-    // {
-    //   key: "disney",
-    //   label: "디즈니",
-    //   imgOn: disneyOn,
-    //   imgOff: disneyOff,
-    //   active: false,
-    // },
-    // {
-    //   key: "coupang",
-    //   label: "쿠팡",
-    //   imgOn: coupangOn,
-    //   imgOff: coupangOff,
-    //   active: false,
-    // },
-    // {
-    //   key: "tiving",
-    //   label: "티빙",
-    //   imgOn: tivingOn,
-    //   imgOff: tivingOff,
-    //   active: false,
-    // },
-    // {
-    //   key: "whatcha",
-    //   label: "왓챠",
-    //   imgOn: whatchaxOn,
-    //   imgOff: whatchaOff,
-    //   active: false,
-    // },
-  ]);
+  const { selectedOtts, setOtts } = useFilterStore();
+  const [providers, setProviders] = useState<WatchProvider[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChangeFilter = (key: string) => {
-    setFilters((prevFilters) => {
-      return prevFilters.map((filter) => {
-        if (filter.key === key) {
-          return { ...filter, active: !filter.active };
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const fetchedData = await getWatchProviders(); // This is already an array of providers
+        if (fetchedData) {
+          const filteredProviders = fetchedData.filter((provider: WatchProvider) =>
+            POPULAR_KR_OTTS.includes(provider.provider_name)
+          );
+          setProviders(filteredProviders);
         } else {
-          return { filter };
+          setProviders([]);
         }
-      });
-    });
+      } catch (err) {
+        console.error("Error fetching watch providers:", err);
+        setError("OTT 제공사를 불러오는 데 실패했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProviders();
+  }, []);
+
+  const handleChangeFilter = (providerId: number) => {
+    if (selectedOtts.includes(providerId)) {
+      setOtts(selectedOtts.filter((id) => id !== providerId));
+    } else {
+      setOtts([...selectedOtts, providerId]);
+    }
   };
+
+  if (loading) return <p>OTT 제공사 로딩 중...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <StyledFilterList>
-      {filters.map((filter) => (
+      {providers.map((provider) => (
         <Filter
-          filterKey={filter.key}
-          label={filter.label}
-          imgOn={filter.imgOn}
-          imgOff={filter.imgOff}
-          active={filter.active}
-          handleChangeFilter={handleChangeFilter}
+          key={provider.provider_id}
+          filterKey={provider.provider_id.toString()}
+          label={provider.provider_name}
+          imgOn={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+          imgOff={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+          active={selectedOtts.includes(provider.provider_id)}
+          handleChangeFilter={() => handleChangeFilter(provider.provider_id)}
         />
       ))}
     </StyledFilterList>
@@ -70,3 +78,4 @@ const FilterList = () => {
 };
 
 export default FilterList;
+

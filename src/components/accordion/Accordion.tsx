@@ -22,13 +22,13 @@ const Accordion = (props: AccordionProps) => {
 
   const [collapse, setCollapse] = useState(false);
 
-  const handleButtonClick = useCallback(
-    (e) => {
-      e.stopPropagation();
+  const handleHeaderClick = useCallback(
+    () => {
       if (parentRef.current === null) return;
       if (parentRef.current.clientHeight > 0) {
         parentRef.current.style.height = "0";
       } else {
+        if (childRef.current === null) return;
         parentRef.current.style.height = `${childRef.current.clientHeight}px`;
       }
       setCollapse(!collapse);
@@ -45,9 +45,9 @@ const Accordion = (props: AccordionProps) => {
     );
   return (
     <StyledAccordion>
-      <StyledAccordionHeader>
+      <StyledAccordionHeader onClick={handleHeaderClick}> {/* onClick을 StyledAccordionHeader로 이동 */}
         {title}
-        <StyledButton onClick={handleButtonClick}>{triangle}</StyledButton>
+        <StyledButton>{triangle}</StyledButton> {/* onClick 제거 */}
       </StyledAccordionHeader>
       <StyledAccordionContent ref={parentRef}>
         <StyledContents ref={childRef}>{children}</StyledContents>

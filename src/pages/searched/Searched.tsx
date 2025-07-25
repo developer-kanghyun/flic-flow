@@ -3,15 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { StyledSearched, StyledSearchResult } from "@pages/searched/styles";
 import { StyledBody } from "@pages/main/styles";
 import { searchMovies } from "@src/api/tmdbApi";
-
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string | null;
-  overview: string;
-  release_date: string;
-  vote_average: number;
-}
+import Movie from "@src/types/Movie";
+import { MovieList } from "@components/index";
 
 const Searched = () => {
   const [searchParams] = useSearchParams();
@@ -55,19 +48,7 @@ const Searched = () => {
           movies.length > 0 ? (
             <div>
               <p>검색어 : "{query ? decodeURIComponent(query) : ''}"</p>
-              <ul>
-                {movies.map((movie) => (
-                  <li key={movie.id}>
-                    <h3>{movie.title}</h3>
-                    <p>{movie.overview}</p>
-                    <p>개봉일: {movie.release_date}</p>
-                    <p>평점: {movie.vote_average}</p>
-                    {movie.poster_path && (
-                      <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} width="100" />
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <MovieList movies={movies} />
             </div>
           ) : (
             <p>검색 결과가 없습니다.</p>

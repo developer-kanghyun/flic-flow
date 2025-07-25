@@ -1,14 +1,26 @@
 import { styled } from "styled-components";
-import { BACKGROUND_COLOR } from "@consts/colors";
 
 export const StyledBody = styled.div`
-  background-color: ${BACKGROUND_COLOR};
-  font-size: 15px;
-  font-family: sans-serif;
-  height: 83vh;
+  background-color: ${({ theme }) => theme.colors.background};
+  color: ${({ theme }) => theme.colors.text};
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 export const StyledMovieBoxWrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 24px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
 `;

@@ -14,7 +14,7 @@ const Filter = (props: FilterProps) => {
   const { filterKey, label, imgOn, imgOff, active, handleChangeFilter } = props;
 
   return (
-    <StyledFilter onClick={() => handleChangeFilter(filterKey)} active={active}>
+    <StyledFilter onClick={() => handleChangeFilter(filterKey)} active={active ? "true" : undefined}>
       <img src={active ? imgOn : imgOff} alt={label} />
       <span>{label}</span>
     </StyledFilter>

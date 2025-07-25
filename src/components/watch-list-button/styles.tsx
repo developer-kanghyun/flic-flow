@@ -1,19 +1,28 @@
 import { styled } from "styled-components";
-import { Link } from "react-router-dom";
 
-export const StyledWatchList = styled.div`
-  align-items: center;
-  box-sizing: border-box;
+export const StyledWatchListButton = styled.button`
+  position: absolute;
+  bottom: 10px; /* Adjust bottom position */
+  right: 10px; /* Adjust right position */
+  z-index: 10; /* Ensure it's above other content */
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark background */
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
-  font-size: 40px;
-  font-family: sans-serif;
+  align-items: center;
   justify-content: center;
-  padding-right: 10px;
-`;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
-export const StyledWatchListButton = styled(Link)`
   img {
-    height: 30px;
-    width: 30px;
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0 0 0 ${({ theme }) => theme.colors.secondary}); /* Secondary color for heart */
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.8);
   }
 `;

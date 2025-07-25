@@ -6,8 +6,20 @@ import { discoverMovies } from "@src/api/tmdbApi";
 import Movie from "@src/types/Movie";
 
 // Helper function to fetch movies for the single-tag view
-const fetchMoviesForTagView = async (baseParams: any, activeTag: string) => {
-  let tagParams: any = { sortBy: 'popular', count: 20 };
+interface BaseParams {
+  ottIds?: number[];
+}
+
+interface TagParams {
+  sortBy?: string;
+  genreIds?: number[];
+  mediaType?: "movie" | "tv";
+  count?: number;
+}
+
+// Helper function to fetch movies for the single-tag view
+const fetchMoviesForTagView = async (baseParams: BaseParams, activeTag: string): Promise<Movie[]> => {
+  const tagParams: TagParams = { sortBy: 'popular', count: 20 };
   switch (activeTag) {
     case 'new':
       tagParams.sortBy = 'primary_release_date.desc';
@@ -38,7 +50,7 @@ const fetchMoviesForTagView = async (baseParams: any, activeTag: string) => {
 };
 
 // Helper function to fetch movies for the default genre-section view
-const fetchMoviesForDefaultView = (baseParams: any) => {
+const fetchMoviesForDefaultView = (baseParams: BaseParams) => {
   const sectionParams = { ...baseParams, count: 5 };
   const popularParams = { ...sectionParams, sortBy: 'popular' };
 

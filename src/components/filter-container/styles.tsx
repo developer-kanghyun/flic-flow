@@ -1,17 +1,19 @@
 import { styled } from "styled-components";
 
 export const StyledFilterContainer = styled.div`
-  align-items: center;
-  background-color: #dcead8;
-  border: 2px;
-  border-radius: 4px;
-  box-sizing: border-box;
   display: flex;
-  font-size: 30px;
-  font-family: sans-serif;
-  justify-content: center;
-  height: 20vh;
-  width: 50vw;
-  margin-left: 20px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background-color: ${({ theme }) => theme.colors.darkGrey};
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px; /* Adjust max-width as needed */
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+    gap: 15px;
+  }
 `;

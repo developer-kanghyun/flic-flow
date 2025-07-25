@@ -8,11 +8,8 @@ export { default as SearchBar } from "./search-bar/SearchBar";
 export { default as FilterContainer } from "./filter-container/FilterContainer";
 export { default as FilterList } from "./filter-list/FilterList";
 export { default as Filter } from "./filter/Filter";
-export { default as RecommendContainer } from "./recommend-container/RecommendContainer";
-export { default as Recommend } from "./recommend/Recommend";
-export { default as RankingContainer } from "./ranking-container/RankingContainer";
-export { default as RankingList } from "./ranking-list/RankingList";
-export { default as Ranking } from "./ranking/Ranking";
+export { default as GenreList } from "./genre-list/GenreList";
+export { default as TagBar } from "./tag-bar/TagBar";
 
 export { default as Accordion } from "./accordion/Accordion";
 export { default as Comedy } from "./comedy/Comedy";
@@ -27,3 +24,5 @@ export { default as MovieInfoContainer } from "./movie-info-container/MovieInfoC
 export { default as MovieInfo } from "./movie-info/MovieInfo";
 export { default as OttLinkContainer } from "./ott-link-container/OttLinkContainer";
 export { default as OttLink } from "./ott-link/OttLink";
+export { default as SelectedOttsDisplay } from "./selected-otts-display/SelectedOttsDisplay";
+export { default as MovieList } from "./movie-list/MovieList";

@@ -1,11 +1,11 @@
-import React from "react";
 import { styled } from "styled-components";
 
 export const StyledMoviePlayerContainer = styled.div`
-  align-items: center;
-  border: 2px solid blue;
-  display: flex;
-  height: 40vh;
-  position: relative;
-  width: 50%;
+  width: 100%;
+  max-width: 800px; /* Adjust max-width as needed */
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 15px;
+  }
 `;
