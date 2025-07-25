@@ -1,12 +1,15 @@
 {
-  "files": [],
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*":["./src/components/*"],
-      "@hooks/*":["./src/hooks/*"],
-      "@pages/*":["./src/pages/*"]
+      "@components/*": ["./src/components/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@consts/*" : ["./src/consts/*"],
+      "@models/*": ["./src/models/*"]
     },
     "jsx": "react-jsx"
-  },
+  }
 }
