@@ -1,16 +1,66 @@
 import { Route, Routes } from "react-router-dom";
-import { Main, Detail, WatchList } from "@pages/index";
-import Layouts from "./components/Layouts";
+import {
+  Main,
+  Detail,
+  WatchList,
+  Recommended,
+  Searched,
+  Test,
+} from "@pages/index";
+import { Layouts } from "@components/index";
 
 const App = () => {
   return (
-    <Layouts>
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/watch-list" element={<WatchList />} />
-      </Routes>
-    </Layouts>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Layouts>
+            <Main />
+          </Layouts>
+        }
+      />
+      <Route
+        path="/detail/:id"
+        element={
+          <Layouts>
+            <Detail />
+          </Layouts>
+        }
+      />
+      <Route
+        path="/watch-list"
+        element={
+          <Layouts>
+            <WatchList />
+          </Layouts>
+        }
+      />
+      <Route
+        path="/recommended/:genre"
+        element={
+          <Layouts>
+            <Recommended />
+          </Layouts>
+        }
+      />
+      <Route
+        path="/searched"
+        element={
+          <Layouts>
+            <Searched />
+          </Layouts>
+        }
+      />
+      <Route
+        path="/test"
+        element={
+          <Layouts>
+            <Test />
+          </Layouts>
+        }
+      />
+    </Routes>
   );
 };
 
