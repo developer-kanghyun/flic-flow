@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyledMoviePlayer, StyledPlayButton, StyledThumbnail } from "./styles";
 import { getMovieVideos, Video } from "@src/api/tmdbApi";
 import playButtonImage from "@src/imgs/triangleRight.png";

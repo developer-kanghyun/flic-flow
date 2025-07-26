@@ -2,6 +2,7 @@ export { default as Header } from "./header/Header";
 export { default as Footer } from "./footer/Footer";
 export { default as Layouts } from "./layouts/Layouts";
 export { default as WatchListButton } from "./watch-list-button/WatchListButton";
+export { default as MovieCard } from "./movie-card/MovieCard";
 export { default as Logo } from "./logo/Logo";
 export { default as SearchBar } from "./search-bar/SearchBar";
 
@@ -26,3 +27,8 @@ export { default as OttLinkContainer } from "./ott-link-container/OttLinkContain
 export { default as OttLink } from "./ott-link/OttLink";
 export { default as SelectedOttsDisplay } from "./selected-otts-display/SelectedOttsDisplay";
 export { default as MovieList } from "./movie-list/MovieList";
+export { default as RankedMovieList } from "./ranked-movie-list/RankedMovieList";
+export { default as RankedMovieCard } from "./ranked-movie-card/RankedMovieCard";
+export { default as TopFiveList } from "./top-five-list/TopFiveList";
+export { default as MovieCarousel } from "./movie-carousel/MovieCarousel";
+export { default as HybridMovieSection } from "./hybrid-movie-section/HybridMovieSection";

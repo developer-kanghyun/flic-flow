@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Filter, Accordion } from "@components/index";
 import { getMovieGenres } from "@src/api/tmdbApi";
 import { StyledFilterList } from "./styles";

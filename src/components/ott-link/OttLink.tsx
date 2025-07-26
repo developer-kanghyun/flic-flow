@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledOttLink } from "./styles";
 import { OTT_SEARCH_URLS } from "@src/api/tmdbApi"; // OTT_SEARCH_URLS import
 

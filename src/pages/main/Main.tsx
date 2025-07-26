@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { StyledBody, StyledMainTopArea } from "./styles";
-import { TagBar, SelectedOttsDisplay, MovieList } from "@components/index";
+import { StyledBody, StyledMainTopArea, StyledContentArea } from "./styles";
+import { TagBar, SelectedOttsDisplay, MovieList, TopFiveList, MovieCarousel, HybridMovieSection } from "@components/index";
 import { useFilterStore } from "@src/store/filterStore";
 import { discoverMovies } from "@src/api/tmdbApi";
 import Movie from "@src/types/Movie";
@@ -17,9 +17,24 @@ interface TagParams {
   count?: number;
 }
 
+// Helper function to get tag title
+const getTagTitle = (tag: string): string => {
+  switch (tag) {
+    case 'new': return '신작';
+    case 'popular': return '인기';
+    case 'drama': return '드라마';
+    case 'animation': return '애니메이션';
+    case 'documentary': return '다큐멘터리';
+    case 'entertainment': return '예능';
+    case 'sports': return '스포츠';
+    case 'all': return '전체 콘텐츠';
+    default: return '콘텐츠';
+  }
+};
+
 // Helper function to fetch movies for the single-tag view
 const fetchMoviesForTagView = async (baseParams: BaseParams, activeTag: string): Promise<Movie[]> => {
-  const tagParams: TagParams = { sortBy: 'popular', count: 20 };
+  const tagParams: TagParams = { sortBy: 'popular', count: 26 };
   switch (activeTag) {
     case 'new':
       tagParams.sortBy = 'primary_release_date.desc';
@@ -51,7 +66,7 @@ const fetchMoviesForTagView = async (baseParams: BaseParams, activeTag: string):
 
 // Helper function to fetch movies for the default genre-section view
 const fetchMoviesForDefaultView = (baseParams: BaseParams) => {
-  const sectionParams = { ...baseParams, count: 5 };
+  const sectionParams = { ...baseParams, count: 20 };
   const popularParams = { ...sectionParams, sortBy: 'popular' };
 
   return Promise.all([
@@ -127,39 +142,58 @@ const Main = () => {
   const noMoviesFound = !loading && !error && allMovies.every(list => list.length === 0);
 
   return (
-    <>
-      <StyledBody>
-        <StyledMainTopArea>
-          <SelectedOttsDisplay />
-          <TagBar />
-        </StyledMainTopArea>
+    <StyledBody>
+      <StyledMainTopArea>
+        <SelectedOttsDisplay />
+        <TagBar />
+      </StyledMainTopArea>
 
-        {loading && <p>영화 로딩 중...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+      <StyledContentArea>
+        {loading && <div className="loading">영화 로딩 중...</div>}
+        {error && <div className="error">{error}</div>}
         
         {!loading && !error && (
           <>
             {activeTag !== 'all' ? (
-              <MovieList movies={popularMovies} />
+              <>
+                <TopFiveList movies={popularMovies} title={getTagTitle(activeTag || 'all')} />
+                {popularMovies.length > 5 && (
+                  <MovieCarousel movies={popularMovies.slice(5, 26)} title={`${getTagTitle(activeTag || 'all')} 더보기`} />
+                )}
+              </>
             ) : (
               <>
-                {newMovies.length > 0 && (<div><h2>신작</h2><MovieList movies={newMovies} /></div>)}
-                {popularMovies.length > 0 && (<div><h2>인기</h2><MovieList movies={popularMovies} /></div>)}
-                {dramaMovies.length > 0 && (<div><h2>드라마</h2><MovieList movies={dramaMovies} /></div>)}
-                {animationMovies.length > 0 && (<div><h2>애니메이션</h2><MovieList movies={animationMovies} /></div>)}
-                {documentaryMovies.length > 0 && (<div><h2>다큐멘터리</h2><MovieList movies={documentaryMovies} /></div>)}
-                {entertainmentMovies.length > 0 && (<div><h2>예능</h2><MovieList movies={entertainmentMovies} /></div>)}
-                {sportsMovies.length > 0 && (<div><h2>스포츠</h2><MovieList movies={sportsMovies} /></div>)}
+                {newMovies.length > 0 && (
+                  <HybridMovieSection movies={newMovies} title="신작" />
+                )}
+                {popularMovies.length > 0 && (
+                  <HybridMovieSection movies={popularMovies} title="인기" />
+                )}
+                {dramaMovies.length > 0 && (
+                  <HybridMovieSection movies={dramaMovies} title="드라마" />
+                )}
+                {animationMovies.length > 0 && (
+                  <HybridMovieSection movies={animationMovies} title="애니메이션" />
+                )}
+                {documentaryMovies.length > 0 && (
+                  <HybridMovieSection movies={documentaryMovies} title="다큐멘터리" />
+                )}
+                {entertainmentMovies.length > 0 && (
+                  <HybridMovieSection movies={entertainmentMovies} title="예능" />
+                )}
+                {sportsMovies.length > 0 && (
+                  <HybridMovieSection movies={sportsMovies} title="스포츠" />
+                )}
               </>
             )}
 
             {noMoviesFound && (
-               <p>표시할 영화가 없습니다. 필터를 조정해보세요.</p>
+              <div className="no-results">표시할 영화가 없습니다. 필터를 조정해보세요.</div>
             )}
           </>
         )}
-      </StyledBody>
-    </>
+      </StyledContentArea>
+    </StyledBody>
   );
 };
 

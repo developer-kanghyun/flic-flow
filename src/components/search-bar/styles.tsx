@@ -4,69 +4,67 @@ import { Link } from "react-router-dom";
 export const StyledSearchBar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 10px;
-  background-color: ${({ theme }) => theme.colors.darkGrey};
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 4px;
+  height: 32px;
+  width: 280px;
 
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 8px;
+  &:focus-within {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    width: 220px;
+    height: 28px;
   }
 `;
 
 export const StyledSearchInput = styled.input`
-  flex-grow: 1;
-  padding: 10px 15px;
-  border: 1px solid ${({ theme }) => theme.colors.lightGrey};
-  border-radius: 5px;
-  background-color: #1B1A17;
+  flex: 1;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
   color: ${({ theme }) => theme.colors.text};
-  font-size: 1em;
+  font-size: 13px;
   outline: none;
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.text};
-    opacity: 0.7;
+    color: ${({ theme }) => theme.colors.textMuted};
   }
 
-  &:focus {
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 10px;
-    font-size: 0.9em;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    padding: 0 10px;
+    font-size: 12px;
   }
 `;
 
 export const StyledSearchButton = styled(Link)`
-  margin-left: 10px;
-  padding: 8px 12px;
-  background-color: transparent; /* 배경색 투명으로 변경 */
-  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  background: ${({ theme }) => theme.colors.primary};
+  transition: opacity 0.2s ease;
 
   img {
-    width: 24px;
-    height: 24px;
-    filter: invert(100%); /* Make magnifier icon white for dark background */
+    width: 14px;
+    height: 14px;
+    filter: invert(1);
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.lightGrey}; /* 호버 시 배경색 변경 */
+    opacity: 0.8;
   }
 
-  @media (max-width: 768px) {
-    margin-left: 8px;
-    padding: 6px 10px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    width: 28px;
+    height: 28px;
+    
     img {
-      width: 20px;
-      height: 20px;
+      width: 12px;
+      height: 12px;
     }
   }
 `;

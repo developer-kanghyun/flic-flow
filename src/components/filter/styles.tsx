@@ -5,39 +5,85 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-  border-radius: 8px;
+  padding: ${({ theme }) => theme.spacing.sm}; // Consistent padding
+  border-radius: 8px; // Slightly rounded corners for the box
   cursor: pointer;
   background-color: ${({ theme, active }) =>
-    active ? theme.colors.primary : '#0A0A0A'};
-  color: ${({ theme, active }) => (active ? theme.colors.background : theme.colors.text)};
-  transition: background-color 0.3s ease, color 0.3s ease;
+    active ? 'transparent' : theme.colors.surface}; // Active: transparent, Inactive: surface
+  border: 1px solid; // Border will be dynamic
+  border-color: ${({ theme, active }) =>
+    active ? 'rgba(255, 215, 0, 0.8)' : 'rgba(255, 215, 0, 0.1)'}; // Active: neon, Inactive: subtle neon
+  transition: all 0.3s ease;
+  min-width: 100px; // Minimum width
+  min-height: 100px; // Minimum height
+  box-sizing: border-box; // Ensure padding is included in width/height
+  box-shadow: ${({ active }) =>
+    active ? '0 0 15px rgba(255, 215, 0, 0.6)' : '0 0 5px rgba(255, 215, 0, 0.1)'}; // Active: strong neon, Inactive: subtle neon glow
 
   img {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 5px;
-    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-bottom: ${({ theme }) => theme.spacing.xxs}; // Smaller margin
+    border-radius: 8px; // Square logo
     object-fit: cover;
+    transition: all 0.3s ease;
+    ${({ active }) => !active && `
+      filter: brightness(0.4); // Darker, but retains color
+    `}
   }
 
   span {
-    font-size: 0.9em;
-    font-weight: bold;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 1;
+    color: ${({ theme, active }) =>
+      active ? theme.colors.text : `rgba(255, 255, 255, 0.6)`}; // Active: text, Inactive: dimmed white
+    transition: color 0.3s ease;
   }
 
   &:hover {
-    opacity: 0.8;
+    transform: translateY(-2px);
+    box-shadow: ${({ active }) =>
+      active ? '0 0 20px rgba(255, 215, 0, 0.8)' : '0 0 10px rgba(255, 215, 0, 0.4)'}; // Hover: stronger neon glow
+    border-color: ${({ theme, active }) =>
+      active ? 'rgba(255, 215, 0, 1)' : 'rgba(255, 215, 0, 0.6)'}; // Hover: brighter neon
+    background-color: ${({ theme, active }) =>
+      active ? 'rgba(255, 215, 0, 0.1)' : `rgba(255, 255, 255, 0.1)`}; // Active: subtle neon background, Inactive: slightly brighter than surface
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   @media (max-width: 768px) {
-    padding: 8px;
+    min-width: 80px;
+    min-height: 80px;
+    padding: ${({ theme }) => theme.spacing.xs};
+    
     img {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
     }
+    
     span {
-      font-size: 0.8em;
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    min-width: 70px;
+    min-height: 70px;
+    padding: ${({ theme }) => theme.spacing.xxs};
+    
+    img {
+      width: 35px;
+      height: 35px;
+    }
+    
+    span {
+      font-size: 0.7rem;
     }
   }
 `;

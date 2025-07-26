@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledFilter } from "./styles";
 
 interface FilterProps {

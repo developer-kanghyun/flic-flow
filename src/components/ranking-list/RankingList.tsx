@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledRankingList } from "./styles";
 import { Movie } from "../../models/Movie";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledTagBar, StyledTagButton } from "./styles";
 import { useFilterStore } from "@src/store/filterStore";
 

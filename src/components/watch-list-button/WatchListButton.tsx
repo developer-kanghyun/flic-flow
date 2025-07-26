@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { StyledWatchListButton } from "./styles";
-import greenHeart from "@src/imgs/greenheart.png";
+import heartIcon from "@src/imgs/heart.svg";
 import greyHeart from "@src/imgs/greyheart.png";
 
 interface WatchListButtonProps {
@@ -28,7 +28,7 @@ const WatchListButton = ({ movieId }: WatchListButtonProps) => {
 
   return (
     <StyledWatchListButton onClick={handleToggleWatchlist}>
-      <img src={isWatched ? greenHeart : greyHeart} alt="Watchlist Toggle" />
+      <img src={isWatched ? heartIcon : greyHeart} alt="Watchlist Toggle" />
     </StyledWatchListButton>
   );
 };

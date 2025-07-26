@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Filter } from "@components/index";
 import { StyledFilterList } from "./styles";
 import { useFilterStore } from "@src/store/filterStore";

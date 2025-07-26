@@ -5,7 +5,7 @@ import { StyledFilterContainer } from "./styles";
 const FilterContainer = () => {
   return (
     <StyledFilterContainer>
-      <Accordion title="OTT 플랫폼">
+      <Accordion title="서비스 목록">
         <FilterList />
       </Accordion>
     </StyledFilterContainer>

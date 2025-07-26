@@ -1,28 +1,31 @@
 import { styled } from "styled-components";
 
 export const StyledWatchListButton = styled.button`
-  position: absolute;
-  bottom: 10px; /* Adjust bottom position */
-  right: 10px; /* Adjust right position */
-  z-index: 10; /* Ensure it's above other content */
-  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark background */
-  border: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease-in-out;
+  backdrop-filter: blur(5px);
 
   img {
-    width: 20px;
-    height: 20px;
-    filter: drop-shadow(0 0 0 ${({ theme }) => theme.colors.secondary}); /* Secondary color for heart */
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s ease-in-out;
   }
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+    transform: scale(1.1);
+
+    img {
+      transform: scale(1.1);
+    }
   }
 `;

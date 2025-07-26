@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyledBody } from "./styles";
 import Movie from "@src/types/Movie"; // Updated import path
 import { getMovieDetail } from "@src/api/tmdbApi"; // Import getMovieDetail

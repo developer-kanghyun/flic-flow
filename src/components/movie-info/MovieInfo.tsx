@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledMovieInfo } from "./styles";
 import Movie from "@src/types/Movie";
 

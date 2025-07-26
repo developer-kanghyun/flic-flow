@@ -42,27 +42,23 @@ const SelectedOttsDisplay = () => {
     selectedOtts.includes(provider.provider_id)
   );
 
-  if (activeProviders.length === 0) {
-    return (
-      <StyledSelectedOttsDisplay>
-        <h3>이용 중인 서비스</h3>
-        <p>선택된 OTT가 없습니다.</p>
-      </StyledSelectedOttsDisplay>
-    );
-  }
-
   return (
     <StyledSelectedOttsDisplay>
-      <h3>이용 중인 서비스</h3>
-      <div>
-        {activeProviders.map((provider) => (
-          <img
-            key={provider.provider_id}
-            src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
-            alt={provider.provider_name}
-            title={provider.provider_name}
-          />
-        ))}
+      <div className="label">선택된 서비스 :</div>
+      <div className="otts-list">
+        {activeProviders.length === 0 ? (
+          <span className="no-selection">선택된 서비스가 없습니다</span>
+        ) : (
+          activeProviders.map((provider) => (
+            <img
+              key={provider.provider_id}
+              className="ott-item"
+              src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+              alt={provider.provider_name}
+              title={provider.provider_name}
+            />
+          ))
+        )}
       </div>
     </StyledSelectedOttsDisplay>
   );

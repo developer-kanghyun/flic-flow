@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { StyledSearched, StyledSearchResult } from "@pages/searched/styles";
 import { StyledBody } from "@pages/main/styles";

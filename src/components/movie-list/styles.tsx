@@ -1,59 +1,70 @@
 import { styled } from "styled-components";
 
-export const StyledMovieList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-start; /* 항목들을 왼쪽부터 정렬 */
+export const StyledMovieList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: ${({ theme }) => theme.spacing.md};
+  width: 100%;
 
-  li {
-    background-color: ${({ theme }) => theme.colors.lightGrey};
-    border-radius: 8px;
-    /* 한 줄에 5개 항목, 20px 간격 */
-    width: calc((100% - (4 * 20px)) / 5);
-    max-width: calc((100% - (4 * 20px)) / 5);
-    aspect-ratio: 2 / 3; /* Common poster aspect ratio */
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease-in-out;
+  @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+    grid-template-columns: repeat(5, 1fr);
+  }
 
-    &:hover {
-      transform: scale(1.03);
-    }
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: ${({ theme }) => theme.spacing.sm};
+  }
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 4px;
-    }
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: ${({ theme }) => theme.spacing.sm};
+  }
+`;
 
-    h3, p {
-      display: none;
-    }
+export const StyledMovieCard = styled.div`
+  background: ${({ theme }) => theme.colors.surface};
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  aspect-ratio: 2/3;
 
-    @media (max-width: 1400px) { /* 4 items per row */
-      width: calc((100% - (3 * 20px)) / 4);
-      max-width: calc((100% - (3 * 20px)) / 4);
-    }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
 
-    @media (max-width: 1024px) { /* 3 items per row */
-      width: calc((100% - (2 * 20px)) / 3);
-      max-width: calc((100% - (2 * 20px)) / 3);
-    }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-    @media (max-width: 768px) { /* 2 items per row */
-      width: calc((100% - (1 * 20px)) / 2);
-      max-width: calc((100% - (1 * 20px)) / 2);
-    }
+  .movie-info {
+    display: none; /* 데스크톱에서는 이미지만 표시 */
+  }
 
-    @media (max-width: 480px) { /* 1 item per row */
-      width: 100%;
-      max-width: 100%;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    .movie-info {
+      display: block;
+      padding: ${({ theme }) => theme.spacing.sm};
+
+      h3 {
+        font-size: 12px;
+        font-weight: 500;
+        color: ${({ theme }) => theme.colors.text};
+        margin-bottom: ${({ theme }) => theme.spacing.xs};
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      p {
+        font-size: 11px;
+        color: ${({ theme }) => theme.colors.textMuted};
+        margin: 0;
+      }
     }
   }
 `;

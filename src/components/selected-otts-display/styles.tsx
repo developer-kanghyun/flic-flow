@@ -1,45 +1,58 @@
 import styled from "styled-components";
 
 export const StyledSelectedOttsDisplay = styled.div`
-  background-color: ${({ theme }) => theme.colors.darkGrey};
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  margin-top: 20px;
-  width: 100%;
-  max-width: 400px; /* FilterContainer와 동일하게 설정 */
-  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
 
-  h3 {
-    color: ${({ theme }) => theme.colors.primary};
-    margin-bottom: 10px;
-    font-size: 1.1em;
-    text-align: center;
+  .label {
+    font-size: 14px;
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.text};
+    min-width: 80px;
   }
 
-  div {
+  .otts-list {
     display: flex;
+    gap: ${({ theme }) => theme.spacing.sm};
+    align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
   }
 
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  .ott-item {
+    width: 58px;
+    height: 58px;
+    border-radius: 8px;
     object-fit: cover;
-    border: 2px solid ${({ theme }) => theme.colors.primary};
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    transition: all 0.2s ease;
+    cursor: default;
+
+    &:hover {
+      border-color: ${({ theme }) => theme.colors.primary};
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(255, 133, 0, 0.3);
+    }
   }
 
-  @media (max-width: 768px) {
-    padding: 10px;
-    h3 {
-      font-size: 1em;
+  .no-selection {
+    color: ${({ theme }) => theme.colors.textMuted};
+    font-size: 13px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.spacing.sm};
+
+    .label {
+      min-width: auto;
     }
-    img {
-      width: 30px;
-      height: 30px;
+
+    .ott-item {
+      width: 48px;
+      height: 48px;
     }
   }
 `;

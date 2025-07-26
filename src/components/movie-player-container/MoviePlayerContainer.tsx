@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledMoviePlayerContainer } from "./styles";
 import { MoviePlayer } from "@components/index";
 import Movie from "@src/types/Movie";

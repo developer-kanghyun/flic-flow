@@ -1,4 +1,3 @@
-import React from "react";
 import { StyledBody, StyledRecommended, StyledRecommendResult } from "./styles";
 import { useParams } from "react-router-dom";
 
