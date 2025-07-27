@@ -41,9 +41,37 @@ export const HeroContent = styled.div`
   display: flex;
   align-items: center;
   padding: 0 ${({ theme }) => theme.spacing.xl};
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.1) 80%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: 0 ${({ theme }) => theme.spacing.lg};
+    
+    &::before {
+      width: 100%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+      );
+    }
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
@@ -252,10 +280,6 @@ export const PlayButton = styled.button`
     transition: left 0.5s ease;
   }
 
-  span {
-    font-size: 0.9rem;
-    margin-right: 2px;
-  }
 
   &:hover {
     background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 50%, #d8d8d8 100%);
@@ -276,9 +300,5 @@ export const PlayButton = styled.button`
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
     font-size: 1rem;
-
-    span {
-      font-size: 0.8rem;
-    }
   }
 `;

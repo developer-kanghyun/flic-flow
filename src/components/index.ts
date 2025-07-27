@@ -28,3 +28,4 @@ export { default as TopFiveList } from "./top-five-list/TopFiveList";
 export { default as MovieCarousel } from "./movie-carousel/MovieCarousel";
 export { default as HybridMovieSection } from "./hybrid-movie-section/HybridMovieSection";
 export { default as HeroBanner } from "./hero-banner/HeroBanner";
+export { VideoModal } from "./video-modal";

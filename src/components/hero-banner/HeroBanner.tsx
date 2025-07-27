@@ -102,8 +102,7 @@ const HeroBanner = ({ movie }: HeroBannerProps) => {
           <HeroActions>
             <Link to={`/detail/${movie.id}`}>
               <PlayButton>
-                <span>▶</span>
-                재생
+                상세보기
               </PlayButton>
             </Link>
             <WatchListButton movieId={movie.id} />

@@ -88,6 +88,88 @@ export const getTvDetail = async (tvId: number): Promise<Movie> => {
   }
 };
 
+// 크레딧 정보 (감독, 출연진) 가져오기
+export const getMovieCredits = async (movieId: number): Promise<import('@src/types/api').Credits> => {
+  try {
+    const response = await tmdbApi.get<import('@src/types/api').Credits>(`/movie/${movieId}/credits`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching movie credits for ID ${movieId}:`, error);
+    throw error;
+  }
+};
+
+export const getTvCredits = async (tvId: number): Promise<import('@src/types/api').Credits> => {
+  try {
+    const response = await tmdbApi.get<import('@src/types/api').Credits>(`/tv/${tvId}/credits`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching TV credits for ID ${tvId}:`, error);
+    throw error;
+  }
+};
+
+export const getContentCredits = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<import('@src/types/api').Credits> => {
+  if (mediaType === 'tv') {
+    return getTvCredits(contentId);
+  } else if (mediaType === 'movie') {
+    return getMovieCredits(contentId);
+  }
+  
+  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
+  try {
+    return await getMovieCredits(contentId);
+  } catch {
+    try {
+      return await getTvCredits(contentId);
+    } catch (error) {
+      console.error(`Error fetching content credits for ID ${contentId}:`, error);
+      throw error;
+    }
+  }
+};
+
+// 관련 콘텐츠 추천
+export const getMovieRecommendations = async (movieId: number): Promise<Movie[]> => {
+  try {
+    const response = await tmdbApi.get<{ results: Movie[] }>(`/movie/${movieId}/recommendations`);
+    return response.data.results.map(item => ({ ...item, media_type: 'movie' }));
+  } catch (error) {
+    console.error(`Error fetching movie recommendations for ID ${movieId}:`, error);
+    throw error;
+  }
+};
+
+export const getTvRecommendations = async (tvId: number): Promise<Movie[]> => {
+  try {
+    const response = await tmdbApi.get<{ results: Movie[] }>(`/tv/${tvId}/recommendations`);
+    return response.data.results.map(item => ({ ...item, media_type: 'tv' }));
+  } catch (error) {
+    console.error(`Error fetching TV recommendations for ID ${tvId}:`, error);
+    throw error;
+  }
+};
+
+export const getContentRecommendations = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<Movie[]> => {
+  if (mediaType === 'tv') {
+    return getTvRecommendations(contentId);
+  } else if (mediaType === 'movie') {
+    return getMovieRecommendations(contentId);
+  }
+  
+  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
+  try {
+    return await getMovieRecommendations(contentId);
+  } catch {
+    try {
+      return await getTvRecommendations(contentId);
+    } catch (error) {
+      console.error(`Error fetching content recommendations for ID ${contentId}:`, error);
+      return []; // 추천이 없어도 에러를 던지지 않음
+    }
+  }
+};
+
 export const getContentDetail = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<Movie> => {
   if (mediaType === 'tv') {
     return getTvDetail(contentId);

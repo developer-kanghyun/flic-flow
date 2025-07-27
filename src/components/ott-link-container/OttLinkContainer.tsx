@@ -36,30 +36,27 @@ const OttLinkContainer = ({ movieId, movieTitle, mediaType }: OttLinkContainerPr
 
   if (loading) return <p>시청 가능한 OTT 정보 로딩 중...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!watchProviders || !watchProviders.link || (!watchProviders.flatrate && !watchProviders.buy && !watchProviders.rent)) {
+  if (!watchProviders || !watchProviders.link || !watchProviders.flatrate) {
     return <p>시청 가능한 OTT 정보가 없습니다.</p>;
   }
 
-  const allProviders = [
-    ...(watchProviders.flatrate || []),
-    ...(watchProviders.buy || []),
-    ...(watchProviders.rent || []),
-  ];
-
-  // 중복 제거 (provider_id 기준)
-  const uniqueProviders = Array.from(new Map(allProviders.map(item => [item.provider_id, item])).values());
+  // 스트리밍 플랫폼만 표시 (Netflix Standard with Ads 제외)
+  const streamingProviders = (watchProviders.flatrate || []).filter(
+    provider => !provider.provider_name.includes('Standard with Ads')
+  );
 
   return (
-    <StyledOttLinkContainer>
+    <StyledOttLinkContainer className="ott-link-container">
       <h2>시청하기</h2>
-      <div>
-        {uniqueProviders.map((provider) => (
+      
+      <div className="provider-grid">
+        {streamingProviders.map((provider) => (
           <OttLink
-            key={provider.provider_id}
+            key={`stream-${provider.provider_id}`}
             providerName={provider.provider_name}
             logoPath={provider.logo_path}
-            link={watchProviders.link} // 전체 영화 링크를 전달
-            movieTitle={movieTitle} // movieTitle 전달
+            link={watchProviders.link}
+            movieTitle={movieTitle}
           />
         ))}
       </div>
