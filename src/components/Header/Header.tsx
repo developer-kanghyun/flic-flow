@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Logo, SearchBar, FilterList } from "@components/index";
 import { StyledHeader, StyledWatchListIcon, StyledHeaderContainer, StyledServiceToggle, StyledAccordionContent } from "./styles";
 import heartIcon from "@src/imgs/greyheart.png";

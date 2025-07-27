@@ -1,105 +1,19 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { StyledBody, StyledMainTopArea, StyledContentArea } from "./styles";
-import { TagBar, SelectedOttsDisplay, MovieList, TopFiveList, MovieCarousel, HybridMovieSection, HeroBanner } from "@components/index";
+import { TagBar, SelectedOttsDisplay, TopFiveList, MovieCarousel, HybridMovieSection, HeroBanner } from "@components/index";
 import { useFilterStore } from "@src/store/filterStore";
-import { discoverMovies, getRecentTrendingContent } from "@src/api/tmdbApi";
+import { fetchMoviesForTagView, fetchMoviesForDefaultView, getTagTitle } from "@src/utils/movieHelpers";
 import Movie from "@src/types/Movie";
-
-// Helper function to fetch movies for the single-tag view
-interface BaseParams {
-  ottIds?: number[];
-}
-
-interface TagParams {
-  sortBy?: string;
-  genreIds?: number[];
-  keywordIds?: number[];
-  mediaType?: "movie" | "tv";
-  count?: number;
-}
-
-// Helper function to get tag title
-const getTagTitle = (tag: string): string => {
-  switch (tag) {
-    case 'new': return '신작';
-    case 'popular': return '인기';
-    case 'drama': return '시리즈';
-    case 'animation': return '애니메이션';
-    case 'documentary': return '다큐멘터리';
-    case 'entertainment': return '예능';
-    case 'sports': return '스포츠';
-    case 'all': return '전체 콘텐츠';
-    default: return '콘텐츠';
-  }
-};
-
-// Helper function to fetch movies for the single-tag view
-const fetchMoviesForTagView = async (baseParams: BaseParams, activeTag: string): Promise<Movie[]> => {
-  const tagParams: TagParams = { sortBy: 'popularity.desc', count: 26 };
-  switch (activeTag) {
-    case 'new':
-      // 신작도 오늘의 인기 신작 순으로
-      tagParams.sortBy = 'popularity.desc';
-      // 최근 3개월 이내의 콘텐츠만 필터링
-      const threeMonthsAgo = new Date();
-      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-      const dateFilter = threeMonthsAgo.toISOString().split('T')[0];
-      return getRecentTrendingContent(dateFilter, 26, baseParams.ottIds);
-    case 'popular':
-      tagParams.sortBy = 'popularity.desc';
-      break;
-    case 'drama':
-      tagParams.genreIds = [18]; // Drama
-      tagParams.mediaType = 'tv';
-      tagParams.sortBy = 'popularity.desc';
-      break;
-    case 'animation':
-      tagParams.genreIds = [16]; // Animation
-      tagParams.sortBy = 'popularity.desc';
-      break;
-    case 'documentary':
-      tagParams.genreIds = [99]; // Documentary
-      tagParams.sortBy = 'popularity.desc';
-      break;
-    case 'entertainment':
-      tagParams.genreIds = [35, 10402]; // Comedy + Music (예능 대체)
-      tagParams.mediaType = 'tv';
-      tagParams.sortBy = 'popularity.desc';
-      break;
-    case 'sports':
-      // 스포츠 키워드만 사용 (다큐멘터리 장르 제거)
-      tagParams.keywordIds = [6075, 818, 1584, 3671, 9715]; // sport, football, sports drama, basketball, baseball
-      tagParams.sortBy = 'popularity.desc';
-      break;
-  }
-  return discoverMovies({ ...baseParams, ...tagParams });
-};
-
-// Helper function to fetch movies for the default genre-section view
-const fetchMoviesForDefaultView = (baseParams: BaseParams) => {
-  const sectionParams = { ...baseParams, count: 20 };
-  const popularParams = { ...sectionParams, sortBy: 'popularity.desc' };
-
-  return Promise.all([
-    discoverMovies({ ...sectionParams, sortBy: 'primary_release_date.desc' }),
-    discoverMovies(popularParams),
-    discoverMovies({ ...popularParams, genreIds: [18], mediaType: 'tv' }),
-    discoverMovies({ ...popularParams, genreIds: [16] }),
-    discoverMovies({ ...popularParams, genreIds: [99] }),
-    discoverMovies({ ...popularParams, genreIds: [35, 10402], mediaType: 'tv' }),
-    discoverMovies({ ...popularParams, keywordIds: [6075, 818, 1584, 3671, 9715] }),
-  ]);
-};
 
 const Main = () => {
   const { selectedOtts, activeTag } = useFilterStore();
   const [newMovies, setNewMovies] = useState<Movie[]>([]);
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
-  const [entertainmentMovies, setEntertainmentMovies] = useState<Movie[]>([]);
+  const [actionMovies, setActionMovies] = useState<Movie[]>([]);
+  const [comedyMovies, setComedyMovies] = useState<Movie[]>([]);
   const [dramaMovies, setDramaMovies] = useState<Movie[]>([]);
   const [animationMovies, setAnimationMovies] = useState<Movie[]>([]);
-  const [documentaryMovies, setDocumentaryMovies] = useState<Movie[]>([]);
-  const [sportsMovies, setSportsMovies] = useState<Movie[]>([]);
+  const [horrorMovies, setHorrorMovies] = useState<Movie[]>([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,31 +21,33 @@ const Main = () => {
   const clearAllMovieLists = () => {
     setNewMovies([]);
     setPopularMovies([]);
+    setActionMovies([]);
+    setComedyMovies([]);
     setDramaMovies([]);
     setAnimationMovies([]);
-    setDocumentaryMovies([]);
-    setEntertainmentMovies([]);
-    setSportsMovies([]);
+    setHorrorMovies([]);
   };
 
   const fetchMovies = useCallback(async () => {
     setLoading(true);
     setError(null);
+    
     try {
       const baseParams = { ottIds: selectedOtts };
+      
       if (activeTag && activeTag !== 'all') {
-        const results = await fetchMoviesForTagView(baseParams, activeTag);
+        const results = await fetchMoviesForTagView(baseParams, activeTag as import('@src/types/common').TagKey);
         clearAllMovieLists();
-        setPopularMovies(results); // Use popularMovies for the single list
+        setPopularMovies(results);
       } else {
-        const [newM, popM, draM, aniM, docM, entM, spoM] = await fetchMoviesForDefaultView(baseParams);
+        const [newM, popM, actM, comM, draM, aniM, horM] = await fetchMoviesForDefaultView(baseParams);
         setNewMovies(newM);
         setPopularMovies(popM);
+        setActionMovies(actM);
+        setComedyMovies(comM);
         setDramaMovies(draM);
         setAnimationMovies(aniM);
-        setDocumentaryMovies(docM);
-        setEntertainmentMovies(entM);
-        setSportsMovies(spoM);
+        setHorrorMovies(horM);
       }
     } catch (err) {
       console.error("Error fetching movies:", err);
@@ -147,8 +63,8 @@ const Main = () => {
   }, [fetchMovies]);
 
   const allMovies = [
-    newMovies, popularMovies, dramaMovies, animationMovies, 
-    documentaryMovies, entertainmentMovies, sportsMovies
+    newMovies, popularMovies, actionMovies, comedyMovies,
+    dramaMovies, animationMovies, horrorMovies
   ];
   const noMoviesFound = !loading && !error && allMovies.every(list => list.length === 0);
 
@@ -170,9 +86,9 @@ const Main = () => {
                 {popularMovies.length > 0 && (
                   <HeroBanner movie={popularMovies[0]} />
                 )}
-                <TopFiveList movies={popularMovies} title={getTagTitle(activeTag || 'all')} />
+                <TopFiveList movies={popularMovies} title={getTagTitle((activeTag as import('@src/types/common').TagKey) || 'all')} />
                 {popularMovies.length > 5 && (
-                  <MovieCarousel movies={popularMovies.slice(5, 26)} title={`${getTagTitle(activeTag || 'all')} 더보기`} />
+                  <MovieCarousel movies={popularMovies.slice(5, 26)} title={`${getTagTitle((activeTag as import('@src/types/common').TagKey) || 'all')} 더보기`} />
                 )}
               </>
             ) : (
@@ -183,20 +99,20 @@ const Main = () => {
                 {popularMovies.length > 0 && (
                   <HybridMovieSection movies={popularMovies} title="인기" />
                 )}
+                {actionMovies.length > 0 && (
+                  <HybridMovieSection movies={actionMovies} title="액션" />
+                )}
+                {comedyMovies.length > 0 && (
+                  <HybridMovieSection movies={comedyMovies} title="코미디" />
+                )}
                 {dramaMovies.length > 0 && (
                   <HybridMovieSection movies={dramaMovies} title="드라마" />
                 )}
                 {animationMovies.length > 0 && (
                   <HybridMovieSection movies={animationMovies} title="애니메이션" />
                 )}
-                {documentaryMovies.length > 0 && (
-                  <HybridMovieSection movies={documentaryMovies} title="다큐멘터리" />
-                )}
-                {entertainmentMovies.length > 0 && (
-                  <HybridMovieSection movies={entertainmentMovies} title="예능" />
-                )}
-                {sportsMovies.length > 0 && (
-                  <HybridMovieSection movies={sportsMovies} title="스포츠" />
+                {horrorMovies.length > 0 && (
+                  <HybridMovieSection movies={horrorMovies} title="공포" />
                 )}
               </>
             )}

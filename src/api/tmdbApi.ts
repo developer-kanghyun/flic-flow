@@ -13,7 +13,7 @@ export const OTT_SEARCH_URLS: { [key: string]: string } = {
   "Apple TV+": "https://tv.apple.com/search?term=",
 };
 
-const tmdbApi = axios.create({
+export const tmdbApi = axios.create({
   baseURL: BASE_URL,
   params: {
     api_key: API_KEY,
@@ -22,6 +22,7 @@ const tmdbApi = axios.create({
 });
 
 import Movie from '../types/Movie';
+import type { Genre, WatchProvider, WatchProviderDetails, DiscoverMoviesParams } from '@src/types/api';
 
 export const searchMovies = async (query: string, count?: number): Promise<Movie[]> => {
   try {
@@ -36,11 +37,6 @@ export const searchMovies = async (query: string, count?: number): Promise<Movie
     throw error;
   }
 };
-
-interface Genre {
-  id: number;
-  name: string;
-}
 
 export const getMovieGenres = async (): Promise<Genre[]> => {
   try {
@@ -62,16 +58,10 @@ export const getTvGenres = async (): Promise<Genre[]> => {
   }
 };
 
-interface WatchProvider {
-  provider_id: number;
-  provider_name: string;
-  logo_path: string;
-}
-
 export const getWatchProviders = async (): Promise<WatchProvider[]> => {
   try {
     const response = await tmdbApi.get<{ results: WatchProvider[] }>('/watch/providers/movie');
-    return response.data.results; // results 전체를 반환
+    return response.data.results;
   } catch (error) {
     console.error('Error fetching watch providers:', error);
     throw error;
@@ -81,27 +71,46 @@ export const getWatchProviders = async (): Promise<WatchProvider[]> => {
 export const getMovieDetail = async (movieId: number): Promise<Movie> => {
   try {
     const response = await tmdbApi.get<Movie>(`/movie/${movieId}`);
-    return response.data;
+    return { ...response.data, media_type: 'movie' };
   } catch (error) {
     console.error(`Error fetching movie detail for ID ${movieId}:`, error);
     throw error;
   }
 };
 
-export interface Video {
-  id: string;
-  iso_639_1: string;
-  iso_3166_1: string;
-  key: string;
-  name: string;
-  site: string;
-  size: number;
-  type: string;
-}
-
-export const getMovieVideos = async (movieId: number): Promise<Video[]> => {
+export const getTvDetail = async (tvId: number): Promise<Movie> => {
   try {
-    const response = await tmdbApi.get<{ results: Video[] }>(`/movie/${movieId}/videos`);
+    const response = await tmdbApi.get<Movie>(`/tv/${tvId}`);
+    return { ...response.data, media_type: 'tv' };
+  } catch (error) {
+    console.error(`Error fetching TV detail for ID ${tvId}:`, error);
+    throw error;
+  }
+};
+
+export const getContentDetail = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<Movie> => {
+  if (mediaType === 'tv') {
+    return getTvDetail(contentId);
+  } else if (mediaType === 'movie') {
+    return getMovieDetail(contentId);
+  }
+  
+  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
+  try {
+    return await getMovieDetail(contentId);
+  } catch {
+    try {
+      return await getTvDetail(contentId);
+    } catch (error) {
+      console.error(`Error fetching content detail for ID ${contentId}:`, error);
+      throw error;
+    }
+  }
+};
+
+export const getMovieVideos = async (movieId: number): Promise<import('@src/types/api').Video[]> => {
+  try {
+    const response = await tmdbApi.get<{ results: import('@src/types/api').Video[] }>(`/movie/${movieId}/videos`);
     return response.data.results;
   } catch (error) {
     console.error(`Error fetching movie videos for ID ${movieId}:`, error);
@@ -109,12 +118,35 @@ export const getMovieVideos = async (movieId: number): Promise<Video[]> => {
   }
 };
 
-interface WatchProviderDetails {
-  link: string;
-  flatrate?: Array<{ provider_id: number; provider_name: string; logo_path: string; display_priority: number; }>;
-  rent?: Array<{ provider_id: number; provider_name: string; logo_path: string; display_priority: number; }>;
-  buy?: Array<{ provider_id: number; provider_name: string; logo_path: string; display_priority: number; }>;
-}
+export const getTvVideos = async (tvId: number): Promise<import('@src/types/api').Video[]> => {
+  try {
+    const response = await tmdbApi.get<{ results: import('@src/types/api').Video[] }>(`/tv/${tvId}/videos`);
+    return response.data.results;
+  } catch (error) {
+    console.error(`Error fetching TV videos for ID ${tvId}:`, error);
+    throw error;
+  }
+};
+
+export const getContentVideos = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<import('@src/types/api').Video[]> => {
+  if (mediaType === 'tv') {
+    return getTvVideos(contentId);
+  } else if (mediaType === 'movie') {
+    return getMovieVideos(contentId);
+  }
+  
+  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
+  try {
+    return await getMovieVideos(contentId);
+  } catch {
+    try {
+      return await getTvVideos(contentId);
+    } catch (error) {
+      console.error(`Error fetching content videos for ID ${contentId}:`, error);
+      throw error;
+    }
+  }
+};
 
 export const getMovieWatchProviders = async (movieId: number): Promise<WatchProviderDetails | null> => {
   try {
@@ -123,30 +155,55 @@ export const getMovieWatchProviders = async (movieId: number): Promise<WatchProv
         watch_region: 'KR',
       },
     });
-    return response.data.results.KR || null; // 한국 지역 정보가 없으면 null 반환
+    return response.data.results.KR || null;
   } catch (error) {
     console.error(`Error fetching movie watch providers for ID ${movieId}:`, error);
     throw error;
   }
 };
 
-interface DiscoverMoviesParams {
-  ottIds?: number[];
-  genreIds?: number[];
-  keywordIds?: number[];
-  sortBy?: string;
-  count?: number;
-  mediaType?: "movie" | "tv";
-}
+export const getTvWatchProviders = async (tvId: number): Promise<WatchProviderDetails | null> => {
+  try {
+    const response = await tmdbApi.get<{ results: { KR?: WatchProviderDetails } }>(`/tv/${tvId}/watch/providers`, {
+      params: {
+        watch_region: 'KR',
+      },
+    });
+    return response.data.results.KR || null;
+  } catch (error) {
+    console.error(`Error fetching TV watch providers for ID ${tvId}:`, error);
+    throw error;
+  }
+};
+
+export const getContentWatchProviders = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<WatchProviderDetails | null> => {
+  if (mediaType === 'tv') {
+    return getTvWatchProviders(contentId);
+  } else if (mediaType === 'movie') {
+    return getMovieWatchProviders(contentId);
+  }
+  
+  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
+  try {
+    return await getMovieWatchProviders(contentId);
+  } catch {
+    try {
+      return await getTvWatchProviders(contentId);
+    } catch (error) {
+      console.error(`Error fetching content watch providers for ID ${contentId}:`, error);
+      throw error;
+    }
+  }
+};
 
 // 트렌딩 영화/TV 가져오기 (오늘의 인기)
-export const getTrendingContent = async (count?: number): Promise<Movie[]> => {
+export const getTrendingContent = async (count?: number, timeWindow: 'day' | 'week' = 'day'): Promise<Movie[]> => {
   try {
-    const [movieResponse, tvResponse] = await Promise.all([
-      tmdbApi.get<{ results: Movie[] }>('/trending/movie/day'),
-      tmdbApi.get<{ results: Movie[] }>('/trending/tv/day'),
-    ]);
-    const results: Movie[] = [...movieResponse.data.results, ...tvResponse.data.results];
+    const response = await tmdbApi.get<{ results: Movie[] }>(`/trending/all/${timeWindow}`);
+    const results = response.data.results.map(item => ({
+      ...item,
+      media_type: item.media_type || (item.title ? 'movie' : 'tv')
+    }));
     return count ? results.slice(0, count) : results;
   } catch (error) {
     console.error('Error fetching trending content:', error);
@@ -195,13 +252,14 @@ export const getRecentTrendingContent = async (sinceDate: string, count?: number
 
 export const discoverMovies = async ({ ottIds, genreIds, keywordIds, sortBy, count, mediaType }: DiscoverMoviesParams): Promise<Movie[]> => {
   try {
-    // 모든 경우에 discover API 사용하여 안정성 확보
+    // 현재 날짜 기준으로 필터링 (미래 작품 제외)
     const today = new Date().toISOString().split('T')[0];
     const params: Record<string, string | number> = {
       'primary_release_date.gte': '2010-01-01',
       'primary_release_date.lte': today,
       'first_air_date.gte': '2010-01-01',
-      'first_air_date.lte': today
+      'first_air_date.lte': today,
+      'vote_count.gte': 10 // 최소 10명 이상 평가한 작품만
     };
     
     // 정렬 옵션 설정
@@ -244,9 +302,9 @@ export const discoverMovies = async ({ ottIds, genreIds, keywordIds, sortBy, cou
     const [movieResponse, tvResponse] = await Promise.all([moviePromise, tvPromise]);
     const results: Movie[] = [...movieResponse.data.results, ...tvResponse.data.results];
     
-    // 인기순으로 재정렬 (영화와 TV가 섞여있을 때)
-    if (!mediaType && sortBy === 'popularity.desc') {
-      results.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+    // 순수 인기도(시청률) 기준 정렬
+    if (sortBy === 'popularity.desc') {
+      results.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     }
     
     return count ? results.slice(0, count) : results;

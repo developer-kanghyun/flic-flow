@@ -4,19 +4,39 @@ export const StyledTopFiveList = styled.section`
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 
   h2 {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 600;
     color: ${({ theme }) => theme.colors.text};
+    margin: 0;
     margin-bottom: ${({ theme }) => theme.spacing.lg};
-    display: flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.spacing.sm};
+    padding: 0 12px 0 18px;
+    position: relative;
+    
+    /* 미니멀한 그라데이션 배경 */
+    background: linear-gradient(
+      90deg,
+      rgba(150, 150, 150, 0.1) 5%,
+      rgba(255, 255, 255, 0) 20%,
+      transparent 100%
+    );
+    
+    /* 우측으로 점점 사라지는 효과 */
+    mask: linear-gradient(90deg, black 0%, black 70%, transparent 100%);
+    -webkit-mask: linear-gradient(90deg, black 0%, black 70%, transparent 100%);
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     h2 {
-      font-size: 20px;
+      font-size: 24px;
+      padding-left: 12px;
       margin-bottom: ${({ theme }) => theme.spacing.md};
+    }
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    h2 {
+      font-size: 22px;
+      padding-left: 10px;
     }
   }
 `;

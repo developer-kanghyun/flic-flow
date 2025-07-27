@@ -1,16 +1,6 @@
 import { StyledTagBar, StyledTagButton } from "./styles";
 import { useFilterStore } from "@src/store/filterStore";
-
-const TAGS = [
-  { key: "all", label: "전체" },
-  { key: "new", label: "신작" },
-  { key: "popular", label: "인기" },
-  { key: "drama", label: "시리즈" },
-  { key: "animation", label: "애니메이션" },
-  { key: "documentary", label: "다큐멘터리" },
-  { key: "entertainment", label: "예능" },
-  { key: "sports", label: "스포츠" },
-];
+import { TAGS } from "@src/utils/constants";
 
 const TagBar = () => {
   const { activeTag, setActiveTag } = useFilterStore();

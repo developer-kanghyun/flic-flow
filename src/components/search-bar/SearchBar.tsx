@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   StyledSearchBar,
@@ -25,7 +25,7 @@ const SearchBar = () => {
   return (
     <StyledSearchBar>
       <StyledSearchInput
-        placeholder="제목 검색"
+        placeholder="제목, 장르, 감독, 배우 검색"
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
         onKeyDown={handleKeyDown}

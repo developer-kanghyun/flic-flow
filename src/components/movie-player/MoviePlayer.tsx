@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyledMoviePlayer, StyledPlayButton, StyledThumbnail } from "./styles";
-import { getMovieVideos, Video } from "@src/api/tmdbApi";
+import { getContentVideos } from "@src/api/tmdbApi";
+import type { Video } from "@src/types/api";
 import playButtonImage from "@src/imgs/triangleRight.png";
 import Movie from "@src/types/Movie";
 
@@ -20,7 +21,7 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
       setLoading(true);
       setError(null);
       try {
-        const videos = await getMovieVideos(movieId);
+        const videos = await getContentVideos(movieId, movie.media_type);
         const trailer = videos.find(
           (video: Video) => video.type === "Trailer" && video.site === "YouTube"
         );
@@ -30,7 +31,7 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
           setError("예고편을 찾을 수 없습니다.");
         }
       } catch (err) {
-        console.error("Error fetching movie videos:", err);
+        console.error("Error fetching content videos:", err);
         setError("예고편을 불러오는 데 실패했습니다.");
       } finally {
         setLoading(false);
@@ -38,7 +39,7 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
     };
 
     fetchTrailer();
-  }, [movieId]);
+  }, [movieId, movie.media_type]);
 
   const handlePlayClick = () => {
     setShowTrailer(true);

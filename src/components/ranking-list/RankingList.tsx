@@ -1,5 +1,5 @@
 import { StyledRankingList } from "./styles";
-import { Movie } from "../../models/Movie";
+import Movie from "@src/types/Movie";
 
 interface ListProps {
   movies: Movie[];

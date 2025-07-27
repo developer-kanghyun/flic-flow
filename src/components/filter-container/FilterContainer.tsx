@@ -1,4 +1,3 @@
-import React from "react";
 import { FilterList, Accordion } from "@components/index";
 import { StyledFilterContainer } from "./styles";
 

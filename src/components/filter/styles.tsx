@@ -11,7 +11,7 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
   background-color: ${({ theme, active }) =>
     active ? 'transparent' : theme.colors.surface}; // Active: transparent, Inactive: surface
   border: 1px solid; // Border will be dynamic
-  border-color: ${({ theme, active }) =>
+  border-color: ${({ active }) =>
     active ? 'rgba(255, 215, 0, 0.8)' : 'rgba(255, 215, 0, 0.1)'}; // Active: neon, Inactive: subtle neon
   transition: all 0.3s ease;
   min-width: 100px; // Minimum width
@@ -47,9 +47,9 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
     transform: translateY(-2px);
     box-shadow: ${({ active }) =>
       active ? '0 0 20px rgba(255, 215, 0, 0.8)' : '0 0 10px rgba(255, 215, 0, 0.4)'}; // Hover: stronger neon glow
-    border-color: ${({ theme, active }) =>
+    border-color: ${({ active }) =>
       active ? 'rgba(255, 215, 0, 1)' : 'rgba(255, 215, 0, 0.6)'}; // Hover: brighter neon
-    background-color: ${({ theme, active }) =>
+    background-color: ${({ active }) =>
       active ? 'rgba(255, 215, 0, 0.1)' : `rgba(255, 255, 255, 0.1)`}; // Active: subtle neon background, Inactive: slightly brighter than surface
   }
 

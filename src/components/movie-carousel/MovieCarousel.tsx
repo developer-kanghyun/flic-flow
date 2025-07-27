@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useMemo, memo } from "react";
 import Movie from "@src/types/Movie";
 import { MovieCard } from "@components/index";
 import { 
@@ -6,8 +6,7 @@ import {
   CarouselHeader, 
   CarouselContent, 
   CarouselTrack,
-  CarouselButton,
-  MoreButton
+  CarouselButton
 } from "./styles";
 
 interface MovieCarouselProps {
@@ -15,41 +14,46 @@ interface MovieCarouselProps {
   title: string;
 }
 
-const MovieCarousel = ({ movies, title }: MovieCarouselProps) => {
+const CAROUSEL_CONFIG = {
+  MOBILE: { width: 146, visibleItems: 5 },
+  TABLET: { width: 171, visibleItems: 7 },
+  DESKTOP: { width: 196, visibleItems: 7 },
+} as const;
+
+const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   
-  // 반응형 아이템 너비와 보이는 아이템 수
-  const getItemWidth = () => {
-    if (window.innerWidth <= 480) return 146; // 모바일: 130px + 16px gap
-    if (window.innerWidth <= 768) return 171; // 태블릿: 155px + 16px gap  
-    return 196; // 데스크톱: 180px + 16px gap
-  };
-  
-  const getVisibleItems = () => {
-    if (window.innerWidth <= 480) return 5; // 모바일에서 5개
-    return 7; // 데스크톱/태블릿에서 7개
-  };
-  
-  const itemWidth = getItemWidth();
-  const visibleItems = getVisibleItems();
-  const maxScroll = Math.max(0, (movies.length - visibleItems) * itemWidth);
+  const { itemWidth, visibleItems, maxScroll } = useMemo(() => {
+    const getConfig = () => {
+      if (window.innerWidth <= 480) return CAROUSEL_CONFIG.MOBILE;
+      if (window.innerWidth <= 768) return CAROUSEL_CONFIG.TABLET;
+      return CAROUSEL_CONFIG.DESKTOP;
+    };
+    
+    const config = getConfig();
+    return {
+      itemWidth: config.width,
+      visibleItems: config.visibleItems,
+      maxScroll: Math.max(0, (movies.length - config.visibleItems) * config.width),
+    };
+  }, [movies.length]);
 
-  const scrollLeft = () => {
+  const scrollLeft = useCallback(() => {
     const newPosition = Math.max(0, scrollPosition - itemWidth * visibleItems);
     setScrollPosition(newPosition);
     if (trackRef.current) {
       trackRef.current.style.transform = `translateX(-${newPosition}px)`;
     }
-  };
+  }, [scrollPosition, itemWidth, visibleItems]);
 
-  const scrollRight = () => {
+  const scrollRight = useCallback(() => {
     const newPosition = Math.min(maxScroll, scrollPosition + itemWidth * visibleItems);
     setScrollPosition(newPosition);
     if (trackRef.current) {
       trackRef.current.style.transform = `translateX(-${newPosition}px)`;
     }
-  };
+  }, [scrollPosition, maxScroll, itemWidth, visibleItems]);
 
   if (movies.length === 0) return null;
 
@@ -82,6 +86,8 @@ const MovieCarousel = ({ movies, title }: MovieCarouselProps) => {
       </CarouselContent>
     </StyledCarousel>
   );
-};
+});
+
+MovieCarousel.displayName = 'MovieCarousel';
 
 export default MovieCarousel;

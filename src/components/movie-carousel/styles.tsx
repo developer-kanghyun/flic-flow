@@ -12,15 +12,37 @@ export const CarouselHeader = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
 
   h3 {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: 600;
     color: ${({ theme }) => theme.colors.text};
     margin: 0;
+    padding: 0 12px 0 18px;
+    position: relative;
+    
+    /* 미니멀한 그라데이션 배경 */
+    background: linear-gradient(
+      90deg,
+      rgba(150, 150, 150, 0.1) 5%,
+      rgba(255, 255, 255, 0) 20%,
+      transparent 100%
+    );
+    
+    /* 우측으로 점점 사라지는 효과 */
+    mask: linear-gradient(90deg, black 0%, black 70%, transparent 100%);
+    -webkit-mask: linear-gradient(90deg, black 0%, black 70%, transparent 100%);
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     h3 {
-      font-size: 16px;
+      font-size: 24px;
+      padding-left: 12px;
+    }
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    h3 {
+      font-size: 22px;
+      padding-left: 10px;
     }
   }
 `;

@@ -1,30 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyledOttLinkContainer } from "./styles";
 import { OttLink } from "@components/index";
-import { getMovieWatchProviders } from "@src/api/tmdbApi";
+import { getContentWatchProviders } from "@src/api/tmdbApi";
+import type { WatchProviderDetails } from "@src/types/api";
 
 interface OttLinkContainerProps {
   movieId: number;
   movieTitle: string;
-  children?: React.ReactNode;
+  mediaType?: 'movie' | 'tv';
 }
 
-interface ProviderDetail {
-  logo_path: string;
-  provider_id: number;
-  provider_name: string;
-  display_priority: number;
-}
-
-interface WatchProviderData {
-  link: string;
-  buy?: ProviderDetail[];
-  flatrate?: ProviderDetail[];
-  rent?: ProviderDetail[];
-}
-
-const OttLinkContainer = ({ movieId, movieTitle }: OttLinkContainerProps) => {
-  const [watchProviders, setWatchProviders] = useState<WatchProviderData | null>(null);
+const OttLinkContainer = ({ movieId, movieTitle, mediaType }: OttLinkContainerProps) => {
+  const [watchProviders, setWatchProviders] = useState<WatchProviderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +20,7 @@ const OttLinkContainer = ({ movieId, movieTitle }: OttLinkContainerProps) => {
       setLoading(true);
       setError(null);
       try {
-        const data = await getMovieWatchProviders(movieId);
+        const data = await getContentWatchProviders(movieId, mediaType);
         setWatchProviders(data);
         console.log("Watch Providers Data:", data); // 디버깅을 위한 콘솔 로그 추가
       } catch (err) {
@@ -45,7 +32,7 @@ const OttLinkContainer = ({ movieId, movieTitle }: OttLinkContainerProps) => {
     };
 
     fetchWatchProviders();
-  }, [movieId]);
+  }, [movieId, mediaType]);
 
   if (loading) return <p>시청 가능한 OTT 정보 로딩 중...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;

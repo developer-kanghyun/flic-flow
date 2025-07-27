@@ -13,11 +13,6 @@ export { default as GenreList } from "./genre-list/GenreList";
 export { default as TagBar } from "./tag-bar/TagBar";
 
 export { default as Accordion } from "./accordion/Accordion";
-export { default as Comedy } from "./comedy/Comedy";
-export { default as Drama } from "./drama/Drama";
-export { default as Popular } from "./popular/Popular";
-export { default as New } from "./new/New";
-export { default as Sports } from "./sports/Sports";
 
 export { default as MoviePlayerContainer } from "./movie-player-container/MoviePlayerContainer";
 export { default as MoviePlayer } from "./movie-player/MoviePlayer";

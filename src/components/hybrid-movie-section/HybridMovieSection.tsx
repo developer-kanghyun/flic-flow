@@ -1,11 +1,11 @@
 import Movie from "@src/types/Movie";
 import { MovieCard } from "@components/index";
 import { MovieCarousel } from "@components/index";
-import { 
-  StyledHybridSection, 
-  SectionHeader, 
+import {
+  StyledHybridSection,
+  SectionHeader,
   FixedGrid,
-  CarouselWrapper
+  CarouselWrapper,
 } from "./styles";
 
 interface HybridMovieSectionProps {
@@ -24,7 +24,7 @@ const HybridMovieSection = ({ movies, title }: HybridMovieSectionProps) => {
       <SectionHeader>
         <h3>{title}</h3>
       </SectionHeader>
-      
+
       {/* 첫 5개는 고정 그리드 */}
       <FixedGrid>
         {firstFiveMovies.map((movie) => (
@@ -33,7 +33,7 @@ const HybridMovieSection = ({ movies, title }: HybridMovieSectionProps) => {
           </div>
         ))}
       </FixedGrid>
-      
+
       {/* 나머지는 캐러셀 */}
       {remainingMovies.length > 0 && (
         <CarouselWrapper>
