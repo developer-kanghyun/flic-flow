@@ -7,7 +7,7 @@ export const StyledSelectedOttsDisplay = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
 
   .label {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 500;
     color: ${({ theme }) => theme.colors.text};
     min-width: 80px;
@@ -38,7 +38,7 @@ export const StyledSelectedOttsDisplay = styled.div`
 
   .no-selection {
     color: ${({ theme }) => theme.colors.textMuted};
-    font-size: 13px;
+    font-size: 16px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {

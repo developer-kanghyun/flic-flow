@@ -20,7 +20,7 @@ export const StyledTagButton = styled.button<{ $active: boolean }>`
   border: 1px solid ${({ theme, $active }) =>
     $active ? theme.colors.primary : theme.colors.border};
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -34,6 +34,6 @@ export const StyledTagButton = styled.button<{ $active: boolean }>`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
-    font-size: 12px;
+    font-size: 14px;
   }
 `;

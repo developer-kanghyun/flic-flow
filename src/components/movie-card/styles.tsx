@@ -11,7 +11,7 @@ export const StyledMovieCard = styled.div`
   border: 1px solid transparent;
 
   &:hover {
-    transform: translateY(-4px) scale(1.1);
+    transform: translateY(-2px) scale(1.01);
     box-shadow: 
       0 4px 12px rgba(255, 133, 0, 0.3),
       0 0 20px rgba(255, 220, 0, 0.4);
@@ -51,7 +51,7 @@ export const WatchListButtonWrapper = styled.div`
   position: absolute;
   top: ${({ theme }) => theme.spacing.sm};
   right: ${({ theme }) => theme.spacing.sm};
-  z-index: 10;
+  z-index: 20;
 
   .watch-list-btn {
     opacity: 0;

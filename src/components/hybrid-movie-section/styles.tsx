@@ -73,9 +73,26 @@ export const FixedGrid = styled.div`
 
 export const CarouselWrapper = styled.div`
   margin-top: ${({ theme }) => theme.spacing.lg};
+  overflow: hidden; /* 이미지가 캐러셀 밖으로 나가지 않도록 완전 차단 */
   
   /* 캐러셀 헤더 숨기기 (이미 위에 있으므로) */
   h3 {
     display: none;
+  }
+  
+  /* 캐러셀 콘텐츠 너비 제한 */
+  > div > div:first-child {
+    width: calc(180px * 7 + 16px * 6 + 20px); /* 정확히 7개 카드 + 6개 갭 + 호버 여백 */
+    margin: 0 auto;
+    padding: 10px; /* 호버 시 scale 효과를 위한 여백 */
+    overflow: hidden;
+    
+    @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+      width: calc(155px * 7 + 16px * 6 + 20px); /* 태블릿에서 7개 카드 */
+    }
+    
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      width: calc(130px * 5 + 16px * 4 + 20px); /* 모바일에서 5개 카드 */
+    }
   }
 `;

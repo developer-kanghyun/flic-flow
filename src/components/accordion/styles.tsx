@@ -1,15 +1,9 @@
 import { styled } from "styled-components";
 
 export const StyledAccordion = styled.div`
-  position: fixed;
-  top: 80px;
-  left: 0;
-  right: 0;
-  z-index: 90;
   background: ${({ theme }) => theme.colors.surface};
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const StyledAccordionHeader = styled.div<{ isOpen: boolean }>`
@@ -19,7 +13,7 @@ export const StyledAccordionHeader = styled.div<{ isOpen: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
   background: transparent;
   color: ${({ theme, isOpen }) => isOpen ? theme.colors.primary : theme.colors.text};
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -32,7 +26,7 @@ export const StyledAccordionHeader = styled.div<{ isOpen: boolean }>`
 
   @media (max-width: 768px) {
     padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
-    font-size: 14px;
+    font-size: 16px;
     height: 50px;
   }
 `;

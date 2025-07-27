@@ -33,7 +33,7 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
   }
 
   span {
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     font-weight: 600;
     text-align: center;
     line-height: 1.2;
@@ -68,7 +68,7 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
     }
     
     span {
-      font-size: 0.75rem;
+      font-size: 0.9rem;
     }
   }
 
@@ -83,7 +83,7 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
     }
     
     span {
-      font-size: 0.7rem;
+      font-size: 0.8rem;
     }
   }
 `;

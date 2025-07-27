@@ -1,19 +1,13 @@
 import { styled } from "styled-components";
 
 export const StyledFilterContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  margin-top: 80px; /* 헤더 높이만큼 마진 */
   padding: 20px;
-  background-color: ${({ theme }) => theme.colors.darkGrey};
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  max-width: 400px; /* Adjust max-width as needed */
-  box-sizing: border-box;
+  background: ${({ theme }) => theme.colors.background};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
-  @media (max-width: 768px) {
-    padding: 15px;
-    gap: 15px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    margin-top: 56px; /* 모바일에서 헤더 높이 */
+    padding: ${({ theme }) => theme.spacing.md};
   }
 `;

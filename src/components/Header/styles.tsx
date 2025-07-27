@@ -1,20 +1,23 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 
-export const StyledHeader = styled.header`
+export const StyledHeaderContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 ${({ theme }) => theme.spacing.lg};
   height: 80px;
-  background: rgba(15, 15, 15, 0.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   .header-left {
     display: flex;
@@ -39,6 +42,56 @@ export const StyledHeader = styled.header`
     .header-right {
       gap: ${({ theme }) => theme.spacing.sm};
     }
+  }
+`;
+
+export const StyledServiceToggle = styled.button<{ isOpen: boolean }>`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  img {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.2s ease;
+    transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+`;
+
+export const StyledAccordionContent = styled.div<{ isOpen: boolean }>`
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: ${({ isOpen }) => isOpen ? 'auto' : '0'};
+  max-height: ${({ isOpen }) => isOpen ? '300px' : '0'};
+  background: ${({ theme }) => theme.colors.background};
+  border-bottom: ${({ isOpen }) => isOpen ? `1px solid ${({ theme }) => theme.colors.border}` : 'none'};
+  
+  ${({ isOpen }) => isOpen && `
+    padding: 20px;
+  `}
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    ${({ isOpen }) => isOpen && `
+      padding: 16px;
+    `}
   }
 `;
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, Footer, FilterContainer, Accordion } from "@components/index";
+import { Header, Footer } from "@components/index";
 import { StyledLayouts, StyledMain } from "./styles";
 
 interface LayoutsProps {
@@ -13,8 +13,6 @@ const Layouts = (props: LayoutsProps) => {
     <>
       <StyledLayouts>
         <Header />
-        <Accordion />
-        <FilterContainer />
         <StyledMain>{children}</StyledMain>
         <Footer />
       </StyledLayouts>

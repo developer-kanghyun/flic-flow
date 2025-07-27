@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { StyledBody, StyledMainTopArea, StyledContentArea } from "./styles";
-import { TagBar, SelectedOttsDisplay, MovieList, TopFiveList, MovieCarousel, HybridMovieSection } from "@components/index";
+import { TagBar, SelectedOttsDisplay, MovieList, TopFiveList, MovieCarousel, HybridMovieSection, HeroBanner } from "@components/index";
 import { useFilterStore } from "@src/store/filterStore";
 import { discoverMovies } from "@src/api/tmdbApi";
 import Movie from "@src/types/Movie";
@@ -156,6 +156,9 @@ const Main = () => {
           <>
             {activeTag !== 'all' ? (
               <>
+                {popularMovies.length > 0 && (
+                  <HeroBanner movie={popularMovies[0]} />
+                )}
                 <TopFiveList movies={popularMovies} title={getTagTitle(activeTag || 'all')} />
                 {popularMovies.length > 5 && (
                   <MovieCarousel movies={popularMovies.slice(5, 26)} title={`${getTagTitle(activeTag || 'all')} 더보기`} />
