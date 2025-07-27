@@ -139,41 +139,116 @@ interface DiscoverMoviesParams {
   mediaType?: "movie" | "tv";
 }
 
-export const discoverMovies = async ({ ottIds, genreIds, keywordIds, sortBy, count, mediaType }: DiscoverMoviesParams): Promise<Movie[]> => {
+// 트렌딩 영화/TV 가져오기 (오늘의 인기)
+export const getTrendingContent = async (count?: number): Promise<Movie[]> => {
   try {
-    const params: Record<string, string | number> = {};
+    const [movieResponse, tvResponse] = await Promise.all([
+      tmdbApi.get<{ results: Movie[] }>('/trending/movie/day'),
+      tmdbApi.get<{ results: Movie[] }>('/trending/tv/day'),
+    ]);
+    const results: Movie[] = [...movieResponse.data.results, ...tvResponse.data.results];
+    return count ? results.slice(0, count) : results;
+  } catch (error) {
+    console.error('Error fetching trending content:', error);
+    throw error;
+  }
+};
+
+// 최근 신작 중 인기순으로 가져오기
+export const getRecentTrendingContent = async (sinceDate: string, count?: number, ottIds?: number[]): Promise<Movie[]> => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // 모든 경우에 discover API 사용하여 날짜 필터링 보장
+    const params: Record<string, string | number> = {
+      sort_by: 'popularity.desc',
+      'primary_release_date.gte': sinceDate,
+      'primary_release_date.lte': today,
+      'first_air_date.gte': sinceDate,
+      'first_air_date.lte': today
+    };
+    
     if (ottIds && ottIds.length > 0) {
       params.with_watch_providers = ottIds.join('|');
       params.watch_region = 'KR';
     }
+    
+    let moviePromise = Promise.resolve({ data: { results: [] as Movie[] } });
+    let tvPromise = Promise.resolve({ data: { results: [] as Movie[] } });
+
+    moviePromise = tmdbApi.get<{ results: Movie[] }>('/discover/movie', { params });
+    tvPromise = tmdbApi.get<{ results: Movie[] }>('/discover/tv', { params });
+
+    const [movieResponse, tvResponse] = await Promise.all([moviePromise, tvPromise]);
+    const results: Movie[] = [...movieResponse.data.results, ...tvResponse.data.results];
+    return count ? results.slice(0, count) : results;
+  } catch (error) {
+    console.error('Error fetching recent trending content:', error);
+    // 폴백: 일반 신작 검색
+    return discoverMovies({ 
+      ottIds,
+      sortBy: 'primary_release_date.desc', 
+      count 
+    });
+  }
+};
+
+export const discoverMovies = async ({ ottIds, genreIds, keywordIds, sortBy, count, mediaType }: DiscoverMoviesParams): Promise<Movie[]> => {
+  try {
+    // 모든 경우에 discover API 사용하여 안정성 확보
+    const today = new Date().toISOString().split('T')[0];
+    const params: Record<string, string | number> = {
+      'primary_release_date.gte': '2010-01-01',
+      'primary_release_date.lte': today,
+      'first_air_date.gte': '2010-01-01',
+      'first_air_date.lte': today
+    };
+    
+    // 정렬 옵션 설정
+    if (sortBy === "popular" || sortBy === "popularity.desc") {
+      params.sort_by = 'popularity.desc';
+    } else if (sortBy === "new" || sortBy === "primary_release_date.desc") {
+      params.sort_by = 'primary_release_date.desc';
+    } else if (sortBy) {
+      params.sort_by = sortBy;
+    } else {
+      params.sort_by = 'popularity.desc'; // 기본값
+    }
+    
+    if (ottIds && ottIds.length > 0) {
+      params.with_watch_providers = ottIds.join('|');
+      params.watch_region = 'KR';
+    }
+    
     if (genreIds && genreIds.length > 0) {
       params.with_genres = genreIds.join('|');
     }
+    
     if (keywordIds && keywordIds.length > 0) {
       params.with_keywords = keywordIds.join('|');
     }
-    if (sortBy) {
-      if (sortBy === "popular") {
-        params.sort_by = 'popularity.desc';
-      } else if (sortBy === "new") {
-        params.sort_by = 'primary_release_date.desc';
-      }
-    }
-
+    
     let moviePromise = Promise.resolve({ data: { results: [] as Movie[] } });
     let tvPromise = Promise.resolve({ data: { results: [] as Movie[] } });
 
     if (mediaType === 'movie') {
-      moviePromise = tmdbApi.get<{ results: Movie[] }>('/discover/movie', { params: params });
+      moviePromise = tmdbApi.get<{ results: Movie[] }>('/discover/movie', { params });
     } else if (mediaType === 'tv') {
-      tvPromise = tmdbApi.get<{ results: Movie[] }>('/discover/tv', { params: params });
+      tvPromise = tmdbApi.get<{ results: Movie[] }>('/discover/tv', { params });
     } else {
-      moviePromise = tmdbApi.get<{ results: Movie[] }>('/discover/movie', { params: params });
-      tvPromise = tmdbApi.get<{ results: Movie[] }>('/discover/tv', { params: params });
+      // 둘 다 가져오기
+      moviePromise = tmdbApi.get<{ results: Movie[] }>('/discover/movie', { params });
+      tvPromise = tmdbApi.get<{ results: Movie[] }>('/discover/tv', { params });
     }
 
     const [movieResponse, tvResponse] = await Promise.all([moviePromise, tvPromise]);
     const results: Movie[] = [...movieResponse.data.results, ...tvResponse.data.results];
+    
+    // 인기순으로 재정렬 (영화와 TV가 섞여있을 때)
+    if (!mediaType && sortBy === 'popularity.desc') {
+      results.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+    }
+    
     return count ? results.slice(0, count) : results;
   } catch (error) {
     console.error('Error discovering movies/tv shows:', error);

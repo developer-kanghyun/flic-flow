@@ -5,7 +5,7 @@ const TAGS = [
   { key: "all", label: "전체" },
   { key: "new", label: "신작" },
   { key: "popular", label: "인기" },
-  { key: "drama", label: "드라마" },
+  { key: "drama", label: "시리즈" },
   { key: "animation", label: "애니메이션" },
   { key: "documentary", label: "다큐멘터리" },
   { key: "entertainment", label: "예능" },

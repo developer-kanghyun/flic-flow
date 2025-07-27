@@ -11,7 +11,10 @@ export const StyledRankedMovieCard = styled.div`
 
   &:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+      0 4px 12px rgba(255, 133, 0, 0.3),
+      0 0 20px rgba(255, 220, 0, 0.4);
+    border: 1px solid rgba(255, 220, 0, 0.8);
 
     .watch-list-btn {
       opacity: 1;

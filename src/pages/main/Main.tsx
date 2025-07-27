@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { StyledBody, StyledMainTopArea, StyledContentArea } from "./styles";
 import { TagBar, SelectedOttsDisplay, MovieList, TopFiveList, MovieCarousel, HybridMovieSection, HeroBanner } from "@components/index";
 import { useFilterStore } from "@src/store/filterStore";
-import { discoverMovies } from "@src/api/tmdbApi";
+import { discoverMovies, getRecentTrendingContent } from "@src/api/tmdbApi";
 import Movie from "@src/types/Movie";
 
 // Helper function to fetch movies for the single-tag view
@@ -13,6 +13,7 @@ interface BaseParams {
 interface TagParams {
   sortBy?: string;
   genreIds?: number[];
+  keywordIds?: number[];
   mediaType?: "movie" | "tv";
   count?: number;
 }
@@ -22,7 +23,7 @@ const getTagTitle = (tag: string): string => {
   switch (tag) {
     case 'new': return '신작';
     case 'popular': return '인기';
-    case 'drama': return '드라마';
+    case 'drama': return '시리즈';
     case 'animation': return '애니메이션';
     case 'documentary': return '다큐멘터리';
     case 'entertainment': return '예능';
@@ -34,31 +35,41 @@ const getTagTitle = (tag: string): string => {
 
 // Helper function to fetch movies for the single-tag view
 const fetchMoviesForTagView = async (baseParams: BaseParams, activeTag: string): Promise<Movie[]> => {
-  const tagParams: TagParams = { sortBy: 'popular', count: 26 };
+  const tagParams: TagParams = { sortBy: 'popularity.desc', count: 26 };
   switch (activeTag) {
     case 'new':
-      tagParams.sortBy = 'primary_release_date.desc';
-      break;
+      // 신작도 오늘의 인기 신작 순으로
+      tagParams.sortBy = 'popularity.desc';
+      // 최근 3개월 이내의 콘텐츠만 필터링
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      const dateFilter = threeMonthsAgo.toISOString().split('T')[0];
+      return getRecentTrendingContent(dateFilter, 26, baseParams.ottIds);
     case 'popular':
-      break; // Default is popular
+      tagParams.sortBy = 'popularity.desc';
+      break;
     case 'drama':
-      tagParams.genreIds = [18];
+      tagParams.genreIds = [18]; // Drama
       tagParams.mediaType = 'tv';
+      tagParams.sortBy = 'popularity.desc';
       break;
     case 'animation':
-      tagParams.genreIds = [16];
+      tagParams.genreIds = [16]; // Animation
+      tagParams.sortBy = 'popularity.desc';
       break;
     case 'documentary':
-      tagParams.genreIds = [99];
-      tagParams.mediaType = 'tv'; // Assuming documentaries can be TV shows too
+      tagParams.genreIds = [99]; // Documentary
+      tagParams.sortBy = 'popularity.desc';
       break;
     case 'entertainment':
-      tagParams.genreIds = [10767];
+      tagParams.genreIds = [35, 10402]; // Comedy + Music (예능 대체)
       tagParams.mediaType = 'tv';
+      tagParams.sortBy = 'popularity.desc';
       break;
     case 'sports':
-      tagParams.genreIds = [10770];
-      tagParams.mediaType = 'movie';
+      // 스포츠 키워드만 사용 (다큐멘터리 장르 제거)
+      tagParams.keywordIds = [6075, 818, 1584, 3671, 9715]; // sport, football, sports drama, basketball, baseball
+      tagParams.sortBy = 'popularity.desc';
       break;
   }
   return discoverMovies({ ...baseParams, ...tagParams });
@@ -67,7 +78,7 @@ const fetchMoviesForTagView = async (baseParams: BaseParams, activeTag: string):
 // Helper function to fetch movies for the default genre-section view
 const fetchMoviesForDefaultView = (baseParams: BaseParams) => {
   const sectionParams = { ...baseParams, count: 20 };
-  const popularParams = { ...sectionParams, sortBy: 'popular' };
+  const popularParams = { ...sectionParams, sortBy: 'popularity.desc' };
 
   return Promise.all([
     discoverMovies({ ...sectionParams, sortBy: 'primary_release_date.desc' }),
@@ -75,8 +86,8 @@ const fetchMoviesForDefaultView = (baseParams: BaseParams) => {
     discoverMovies({ ...popularParams, genreIds: [18], mediaType: 'tv' }),
     discoverMovies({ ...popularParams, genreIds: [16] }),
     discoverMovies({ ...popularParams, genreIds: [99] }),
-    discoverMovies({ ...popularParams, genreIds: [10767], mediaType: 'tv' }),
-    discoverMovies({ ...popularParams, genreIds: [10770], mediaType: 'movie' }),
+    discoverMovies({ ...popularParams, genreIds: [35, 10402], mediaType: 'tv' }),
+    discoverMovies({ ...popularParams, keywordIds: [6075, 818, 1584, 3671, 9715] }),
   ]);
 };
 
