@@ -29,3 +29,8 @@ export { default as MovieCarousel } from "./movie-carousel/MovieCarousel";
 export { default as HybridMovieSection } from "./hybrid-movie-section/HybridMovieSection";
 export { default as HeroBanner } from "./hero-banner/HeroBanner";
 export { VideoModal } from "./video-modal";
+
+// Detail page components
+export { default as MovieHero } from "./movie-hero/MovieHero";
+export { default as MovieMetadata } from "./movie-metadata/MovieMetadata";
+export { default as MovieCast } from "./movie-cast/MovieCast";

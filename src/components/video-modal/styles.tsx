@@ -24,10 +24,10 @@ export const ModalOverlay = styled.div`
 
 export const ModalContent = styled.div`
   position: relative;
-  width: 90vw;
-  max-width: 1200px;
-  height: 80vh;
-  max-height: 700px;
+  width: 95vw;
+  max-width: 1600px;
+  height: 90vh;
+  max-height: 900px;
   background: ${({ theme }) => theme.colors.background};
   border-radius: 20px;
   overflow: hidden;
@@ -35,13 +35,13 @@ export const ModalContent = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.1);
   
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    width: 95vw;
-    height: 70vh;
+    width: 98vw;
+    height: 85vh;
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     width: 98vw;
-    height: 60vh;
+    height: 80vh;
   }
 `;
 

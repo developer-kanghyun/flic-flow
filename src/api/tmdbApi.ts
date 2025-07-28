@@ -1,7 +1,26 @@
 import axios from 'axios';
+import { createApiErrorHandler, logError } from '@src/utils/apiErrorHandler';
+import type { MediaType } from '@src/types/common';
+import Movie from '@src/types/Movie';
 
-const API_KEY = '3ae6b5388fdf89ad467b03611db40b01';
+interface Person {
+  id: number;
+  name: string;
+  profile_path: string | null;
+}
+
+interface PersonCredits {
+  cast: Movie[];
+  crew: Movie[];
+}
+
+// Environment variables validation
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = 'https://api.themoviedb.org/3';
+
+if (!API_KEY) {
+  throw new Error('VITE_TMDB_API_KEY is required. Please check your .env file.');
+}
 
 export const OTT_SEARCH_URLS: { [key: string]: string } = {
   Netflix: "https://www.netflix.com/search?q=",
@@ -21,20 +40,64 @@ export const tmdbApi = axios.create({
   },
 });
 
-import Movie from '../types/Movie';
 import type { Genre, WatchProvider, WatchProviderDetails, DiscoverMoviesParams } from '@src/types/api';
 
 export const searchMovies = async (query: string, count?: number): Promise<Movie[]> => {
+  const handleError = createApiErrorHandler('searchMovies');
+  
   try {
-    const [movieResponse, tvResponse] = await Promise.all([
+    const today = new Date().toISOString().split('T')[0];
+    
+    const [movieResponse, tvResponse, personResponse] = await Promise.all([
       tmdbApi.get<{ results: Movie[] }>('/search/movie', { params: { query: query } }),
       tmdbApi.get<{ results: Movie[] }>('/search/tv', { params: { query: query } }),
+      tmdbApi.get<{ results: Person[] }>('/search/person', { params: { query: query } }),
     ]);
-    const results: Movie[] = [...movieResponse.data.results, ...tvResponse.data.results];
-    return count ? results.slice(0, count) : results;
+    
+    // 미래 출시 콘텐츠 필터링 - 더 엄격한 필터링
+    const filterFutureContent = (items: Movie[]) => items.filter(item => {
+      const releaseDate = item.release_date || item.first_air_date;
+      return releaseDate && releaseDate <= today;
+    });
+    
+    let results: Movie[] = [
+      ...filterFutureContent(movieResponse.data.results), 
+      ...filterFutureContent(tvResponse.data.results)
+    ];
+    
+    // 인물 검색 결과가 있으면 해당 인물의 출연작/연출작 추가
+    if (personResponse.data.results.length > 0) {
+      const personCreditsPromises = personResponse.data.results.slice(0, 3).map(async (person: Person) => {
+        try {
+          const creditsResponse = await tmdbApi.get<PersonCredits>(`/person/${person.id}/combined_credits`);
+          return creditsResponse.data.cast.concat(creditsResponse.data.crew || []);
+        } catch (error) {
+          console.error(`Error fetching credits for person ${person.id}:`, error);
+          return [];
+        }
+      });
+      
+      const personCredits = await Promise.all(personCreditsPromises);
+      const personMovies = personCredits.flat().filter((item: Movie) => {
+        const isCorrectType = item.media_type === 'movie' || item.media_type === 'tv';
+        const releaseDate = item.release_date || item.first_air_date;
+        const isReleased = releaseDate && releaseDate <= today;
+        return isCorrectType && isReleased;
+      });
+      
+      results = [...results, ...personMovies];
+    }
+    
+    // 중복 제거 (ID 기준)
+    const uniqueResults = results.filter((item, index, self) => 
+      index === self.findIndex(t => t.id === item.id && t.media_type === item.media_type)
+    );
+    
+    return count ? uniqueResults.slice(0, count) : uniqueResults;
   } catch (error) {
-    console.error('Error searching movies/tv shows:', error);
-    throw error;
+    const apiError = handleError(error);
+    logError(apiError);
+    throw apiError;
   }
 };
 
@@ -68,25 +131,49 @@ export const getWatchProviders = async (): Promise<WatchProvider[]> => {
   }
 };
 
-export const getMovieDetail = async (movieId: number): Promise<Movie> => {
+// 통합된 컨텐츠 상세 정보 조회 함수
+export const getContentDetail = async (contentId: number, mediaType?: MediaType): Promise<Movie> => {
+  const handleError = createApiErrorHandler('getContentDetail');
+  
+  const fetchDetail = async (type: 'movie' | 'tv'): Promise<Movie> => {
+    try {
+      const response = await tmdbApi.get<Movie>(`/${type}/${contentId}`);
+      return { ...response.data, media_type: type };
+    } catch (error) {
+      const apiError = handleError(error);
+      logError(apiError);
+      throw apiError;
+    }
+  };
+  
+  if (mediaType === 'tv') {
+    return fetchDetail('tv');
+  } else if (mediaType === 'movie') {
+    return fetchDetail('movie');
+  }
+  
+  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
   try {
-    const response = await tmdbApi.get<Movie>(`/movie/${movieId}`);
-    return { ...response.data, media_type: 'movie' };
-  } catch (error) {
-    console.error(`Error fetching movie detail for ID ${movieId}:`, error);
-    throw error;
+    return await fetchDetail('movie');
+  } catch {
+    try {
+      return await fetchDetail('tv');
+    } catch (error) {
+      const apiError = createApiErrorHandler('getContentDetail fallback')(error);
+      logError(apiError);
+      throw apiError;
+    }
   }
 };
 
-export const getTvDetail = async (tvId: number): Promise<Movie> => {
-  try {
-    const response = await tmdbApi.get<Movie>(`/tv/${tvId}`);
-    return { ...response.data, media_type: 'tv' };
-  } catch (error) {
-    console.error(`Error fetching TV detail for ID ${tvId}:`, error);
-    throw error;
-  }
-};
+// 하위 호환성을 위한 deprecated 함수들
+/** @deprecated Use getContentDetail instead */
+export const getMovieDetail = (movieId: number): Promise<Movie> => 
+  getContentDetail(movieId, 'movie');
+
+/** @deprecated Use getContentDetail instead */
+export const getTvDetail = (tvId: number): Promise<Movie> => 
+  getContentDetail(tvId, 'tv');
 
 // 크레딧 정보 (감독, 출연진) 가져오기
 export const getMovieCredits = async (movieId: number): Promise<import('@src/types/api').Credits> => {
@@ -132,8 +219,16 @@ export const getContentCredits = async (contentId: number, mediaType?: 'movie' |
 // 관련 콘텐츠 추천
 export const getMovieRecommendations = async (movieId: number): Promise<Movie[]> => {
   try {
+    const today = new Date().toISOString().split('T')[0];
     const response = await tmdbApi.get<{ results: Movie[] }>(`/movie/${movieId}/recommendations`);
-    return response.data.results.map(item => ({ ...item, media_type: 'movie' }));
+    
+    // 미래 출시 콘텐츠 필터링 - 더 엄격한 필터링
+    const filteredResults = response.data.results.filter(item => {
+      const releaseDate = item.release_date;
+      return releaseDate && releaseDate <= today;
+    });
+    
+    return filteredResults.map(item => ({ ...item, media_type: 'movie' }));
   } catch (error) {
     console.error(`Error fetching movie recommendations for ID ${movieId}:`, error);
     throw error;
@@ -142,8 +237,16 @@ export const getMovieRecommendations = async (movieId: number): Promise<Movie[]>
 
 export const getTvRecommendations = async (tvId: number): Promise<Movie[]> => {
   try {
+    const today = new Date().toISOString().split('T')[0];
     const response = await tmdbApi.get<{ results: Movie[] }>(`/tv/${tvId}/recommendations`);
-    return response.data.results.map(item => ({ ...item, media_type: 'tv' }));
+    
+    // 미래 출시 콘텐츠 필터링 - 더 엄격한 필터링
+    const filteredResults = response.data.results.filter(item => {
+      const releaseDate = item.first_air_date;
+      return releaseDate && releaseDate <= today;
+    });
+    
+    return filteredResults.map(item => ({ ...item, media_type: 'tv' }));
   } catch (error) {
     console.error(`Error fetching TV recommendations for ID ${tvId}:`, error);
     throw error;
@@ -170,25 +273,6 @@ export const getContentRecommendations = async (contentId: number, mediaType?: '
   }
 };
 
-export const getContentDetail = async (contentId: number, mediaType?: 'movie' | 'tv'): Promise<Movie> => {
-  if (mediaType === 'tv') {
-    return getTvDetail(contentId);
-  } else if (mediaType === 'movie') {
-    return getMovieDetail(contentId);
-  }
-  
-  // media_type이 없는 경우 영화 API를 먼저 시도하고, 실패하면 TV API 시도
-  try {
-    return await getMovieDetail(contentId);
-  } catch {
-    try {
-      return await getTvDetail(contentId);
-    } catch (error) {
-      console.error(`Error fetching content detail for ID ${contentId}:`, error);
-      throw error;
-    }
-  }
-};
 
 export const getMovieVideos = async (movieId: number): Promise<import('@src/types/api').Video[]> => {
   try {
@@ -281,8 +365,16 @@ export const getContentWatchProviders = async (contentId: number, mediaType?: 'm
 // 트렌딩 영화/TV 가져오기 (오늘의 인기)
 export const getTrendingContent = async (count?: number, timeWindow: 'day' | 'week' = 'day'): Promise<Movie[]> => {
   try {
+    const today = new Date().toISOString().split('T')[0];
     const response = await tmdbApi.get<{ results: Movie[] }>(`/trending/all/${timeWindow}`);
-    const results = response.data.results.map(item => ({
+    
+    // 미래 출시 콘텐츠 필터링 - 더 엄격한 필터링
+    const filteredResults = response.data.results.filter(item => {
+      const releaseDate = item.release_date || item.first_air_date;
+      return releaseDate && releaseDate <= today;
+    });
+    
+    const results = filteredResults.map(item => ({
       ...item,
       media_type: item.media_type || (item.title ? 'movie' : 'tv')
     }));

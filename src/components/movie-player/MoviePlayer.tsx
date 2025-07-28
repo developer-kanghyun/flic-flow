@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { StyledMoviePlayer, StyledPlayButton, StyledThumbnail } from "./styles";
+import { StyledMoviePlayer, StyledThumbnail } from "./styles";
 import { getContentVideos } from "@src/api/tmdbApi";
 import type { Video } from "@src/types/api";
-import playButtonImage from "@src/imgs/triangleRight.png";
 import Movie from "@src/types/Movie";
 
 interface MoviePlayerProps {
@@ -12,7 +11,6 @@ interface MoviePlayerProps {
 
 const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-  const [showTrailer, setShowTrailer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,9 +39,6 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
     fetchTrailer();
   }, [movieId, movie.media_type]);
 
-  const handlePlayClick = () => {
-    setShowTrailer(true);
-  };
 
   if (loading) return <StyledMoviePlayer>예고편 로딩 중...</StyledMoviePlayer>;
   if (error) return <StyledMoviePlayer style={{ color: "red" }}>{error}</StyledMoviePlayer>;
@@ -56,15 +51,7 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
 
   return (
     <StyledMoviePlayer>
-      {!showTrailer ? (
-        <StyledThumbnail src={thumbnailUrl}>
-          {trailerKey && (
-            <StyledPlayButton onClick={handlePlayClick}>
-              <img src={playButtonImage} alt="Play Trailer" />
-            </StyledPlayButton>
-          )}
-        </StyledThumbnail>
-      ) : (
+      {trailerKey ? (
         <iframe
           width="100%"
           height="100%"
@@ -74,6 +61,10 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
           allowFullScreen
           title="Movie Trailer"
         ></iframe>
+      ) : (
+        <StyledThumbnail src={thumbnailUrl}>
+          <p>예고편을 찾을 수 없습니다.</p>
+        </StyledThumbnail>
       )}
     </StyledMoviePlayer>
   );

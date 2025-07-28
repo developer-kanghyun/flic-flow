@@ -110,7 +110,7 @@ export const getTruePopularContent = async (genreIds: number[], count: number = 
         .filter(item => {
           const hasGenre = item.genre_ids?.some(id => genreIds.includes(id));
           const releaseDate = item.release_date || item.first_air_date;
-          const isReleased = !releaseDate || releaseDate <= today;
+          const isReleased = releaseDate && releaseDate <= today;
           return hasGenre && isReleased;
         })
         .slice(0, 10);

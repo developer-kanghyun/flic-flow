@@ -5,6 +5,7 @@ import {
   StyledSearchButton,
   StyledSearchInput,
 } from "./styles";
+import magnifierIcon from "../../imgs/magnifier.svg";
 
 const SearchBar = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -32,7 +33,7 @@ const SearchBar = () => {
         aria-label="영화 검색 입력창"
       />
       <StyledSearchButton to="/searched" onClick={handleSearch}>
-        <img src="src/imgs/magnifier.svg" alt="Search Button" />
+        <img src={magnifierIcon} alt="Search Button" />
       </StyledSearchButton>
     </StyledSearchBar>
   );

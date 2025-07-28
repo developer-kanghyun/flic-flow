@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Movie from "@src/types/Movie";
 import { WatchListButton } from "@components/index";
 import { StyledMovieCard, WatchListButtonWrapper } from "./styles";
-import { IMAGE_BASE_URL, POSTER_SIZES } from "@src/utils/constants";
+import { IMAGE_BASE_URL, POSTER_SIZES, createImageErrorHandler } from "@src/utils/constants";
 
 interface MovieCardProps {
   movie: Movie;
@@ -29,6 +29,7 @@ const MovieCard = memo(({ movie }: MovieCardProps) => {
             src={posterUrl}
             alt={movie.title || movie.name || "Movie"}
             loading="lazy"
+            onError={createImageErrorHandler(movie.poster_path || undefined)}
           />
         ) : (
           <div className="no-image">No Image</div>

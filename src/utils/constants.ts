@@ -47,3 +47,31 @@ export const POSTER_SIZES = {
   LARGE: 'w500',
   ORIGINAL: 'original',
 } as const;
+
+// Image error handling utility
+export const createImageErrorHandler = (posterPath: string | undefined) => {
+  return (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.target as HTMLImageElement;
+    if (!posterPath) return;
+    
+    // Try smaller size first, then remove image if still fails
+    if (target.src.includes('w500')) {
+      target.src = `${IMAGE_BASE_URL}${POSTER_SIZES.MEDIUM}${posterPath}`;
+    } else if (target.src.includes('w342')) {
+      target.src = `${IMAGE_BASE_URL}${POSTER_SIZES.SMALL}${posterPath}`;
+    } else {
+      // If all sizes fail, hide image and show fallback
+      target.style.display = 'none';
+      const parent = target.parentElement;
+      if (parent) {
+        const fallback = parent.querySelector('.no-image') || 
+                        document.createElement('div');
+        fallback.className = 'no-image show';
+        fallback.textContent = 'No Image';
+        if (!parent.querySelector('.no-image')) {
+          parent.appendChild(fallback);
+        }
+      }
+    }
+  };
+};

@@ -100,7 +100,7 @@ const HeroBanner = ({ movie }: HeroBannerProps) => {
           </HeroOverview>
           
           <HeroActions>
-            <Link to={`/detail/${movie.id}`}>
+            <Link to={`/detail/${movie.id}?type=${movie.media_type || (movie.name && !movie.title ? 'tv' : 'movie')}`}>
               <PlayButton>
                 상세보기
               </PlayButton>

@@ -1,9 +1,5 @@
 import { create } from 'zustand';
-
-interface Genre {
-  id: number;
-  name: string;
-}
+import type { Genre } from '@src/types/api';
 
 interface FilterState {
   selectedOtts: number[];

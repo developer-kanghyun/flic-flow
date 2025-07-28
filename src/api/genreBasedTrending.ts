@@ -13,9 +13,9 @@ export const getGenreBasedTrending = async (genreIds: number[], count: number = 
         // 장르 ID가 포함된 항목만 선택
         const hasGenre = item.genre_ids?.some(id => genreIds.includes(id));
         
-        // 미래 작품 제외 (이미 출시된 것만)
+        // 미래 작품 제외 (이미 출시된 것만) - 더 엄격한 필터링
         const releaseDate = item.release_date || item.first_air_date;
-        const isReleased = !releaseDate || releaseDate <= today;
+        const isReleased = releaseDate && releaseDate <= today;
         
         return hasGenre && isReleased;
       })
