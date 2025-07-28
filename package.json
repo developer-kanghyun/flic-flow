@@ -1,11 +1,11 @@
 {
-  "name": "flic flow",
+  "name": "Flic Flow",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "dev": "vite",
+    "start": "node dist/app.js",
+    "dev": "nodemon",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

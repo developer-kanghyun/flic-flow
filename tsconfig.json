@@ -13,11 +13,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "outDir": "./dist",
     "paths": {
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@pages/*": ["./src/pages/*"],
-      "@consts/*" : ["./src/consts/*"],
+      "@consts/*": ["./src/consts/*"],
       "@models/*": ["./src/models/*"],
       "@src/*": ["./src/*"]
     },
