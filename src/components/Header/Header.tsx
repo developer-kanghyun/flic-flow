@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Logo, SearchBar, FilterList } from "@components/index";
+import Logo from "../logo/Logo";
+import SearchBar from "../search-bar/SearchBar";
+import FilterList from "../filter-list/FilterList";
 import { StyledHeader, StyledWatchListIcon, StyledHeaderContainer, StyledServiceToggle, StyledAccordionContent } from "./styles";
 import heartIcon from "@src/imgs/greyheart.png";
 import triangleDown from "@src/imgs/triangleDown.png";
