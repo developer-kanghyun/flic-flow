@@ -1,6 +1,6 @@
-export { default as Header } from "./header/Header";
-export { default as Footer } from "./footer/Footer";
-export { default as Layouts } from "./layouts/Layouts";
+export { default as Header } from "@components/header/Header";
+export { default as Footer } from "@components/footer/Footer";
+export { default as Layout } from "@components/Layouts/Layouts";
 export { default as WatchListButton } from "./watch-list-button/WatchListButton";
 export { default as MovieCard } from "./movie-card/MovieCard";
 export { default as Logo } from "./logo/Logo";
