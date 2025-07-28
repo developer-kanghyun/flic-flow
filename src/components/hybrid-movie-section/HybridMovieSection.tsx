@@ -1,6 +1,6 @@
 import Movie from "@src/types/Movie";
-import { MovieCard } from "@components/index";
-import { MovieCarousel } from "@components/index";
+import MovieCard from "../movie-card/MovieCard";
+import MovieCarousel from "../movie-carousel/MovieCarousel";
 import {
   StyledHybridSection,
   SectionHeader,

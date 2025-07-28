@@ -7,7 +7,7 @@ import {
   Searched,
   Test,
 } from "@pages/index";
-import { Layouts } from "@components/index";
+import Layouts from "@src/components/layouts/Layouts";
 import { useEffect } from "react";
 import { getMovieGenres, getTvGenres } from "./api/tmdbApi";
 import { useFilterStore } from "./store/filterStore";

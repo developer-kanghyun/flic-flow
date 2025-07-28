@@ -4,7 +4,7 @@ import { StyledSearched, StyledSearchResult } from "@pages/searched/styles";
 import { StyledBody } from "@pages/main/styles";
 import { searchMovies } from "@src/api/tmdbApi";
 import Movie from "@src/types/Movie";
-import { MovieList } from "@components/index";
+import MovieList from "@src/components/movie-list/MovieList";
 
 const Searched = () => {
   const [searchParams] = useSearchParams();

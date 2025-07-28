@@ -7,12 +7,10 @@ import {
   Sidebar,
   RecommendationsSection,
 } from "./styles";
-import {
-  MovieHero,
-  MovieMetadata,
-  MovieCast,
-  MovieCarousel,
-} from "@components/index";
+import MovieHero from "@src/components/movie-hero/MovieHero";
+import MovieMetadata from "@src/components/movie-metadata/MovieMetadata";
+import MovieCast from "@src/components/movie-cast/MovieCast";
+import MovieCarousel from "@src/components/movie-carousel/MovieCarousel";
 import { useMovieDetail } from "@src/hooks/useMovieDetail";
 import type { MediaType } from "@src/types/common";
 

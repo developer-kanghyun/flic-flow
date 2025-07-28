@@ -1,5 +1,5 @@
 import { StyledMovieInfoContainer } from "./styles";
-import { MovieInfo } from "@components/index";
+import MovieInfo from "@src/components/movie-info/MovieInfo";
 import Movie from "@src/types/Movie";
 
 interface MovieInfoContainerProps {

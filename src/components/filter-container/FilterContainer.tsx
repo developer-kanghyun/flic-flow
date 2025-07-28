@@ -1,4 +1,5 @@
-import { FilterList, Accordion } from "@components/index";
+import FilterList from "../filter-list/FilterList";
+import Accordion from "../accordion/Accordion";
 import { StyledFilterContainer } from "./styles";
 
 const FilterContainer = () => {

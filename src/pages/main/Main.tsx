@@ -1,6 +1,11 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { StyledBody, StyledMainTopArea, StyledContentArea } from "./styles";
-import { TagBar, SelectedOttsDisplay, TopFiveList, MovieCarousel, HybridMovieSection, HeroBanner } from "@components/index";
+import TagBar from "@src/components/tag-bar/TagBar";
+import SelectedOttsDisplay from "@src/components/selected-otts-display/SelectedOttsDisplay";
+import TopFiveList from "@src/components/top-five-list/TopFiveList";
+import MovieCarousel from "@src/components/movie-carousel/MovieCarousel";
+import HybridMovieSection from "@src/components/hybrid-movie-section/HybridMovieSection";
+import HeroBanner from "@src/components/hero-banner/HeroBanner";
 import { useFilterStore } from "@src/store/filterStore";
 import { fetchMoviesForTagView, fetchMoviesForDefaultView, getTagTitle } from "@src/utils/movieHelpers";
 import Movie from "@src/types/Movie";

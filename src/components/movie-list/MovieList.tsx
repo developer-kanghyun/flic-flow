@@ -1,5 +1,5 @@
 import Movie from "@src/types/Movie";
-import { MovieCard } from "@components/index";
+import MovieCard from "@src/components/movie-card/MovieCard";
 import { StyledMovieList } from "./styles";
 
 interface MovieListProps {

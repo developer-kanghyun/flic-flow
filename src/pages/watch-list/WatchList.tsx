@@ -3,7 +3,7 @@ import { StyledBody } from "./styles";
 import Movie from "@src/types/Movie"; // Updated import path
 import { getMovieDetail, tmdbApi } from "@src/api/tmdbApi"; // Import getMovieDetail
 import { Link } from "react-router-dom"; // Import Link
-import { WatchListButton } from "@components/index";
+import WatchListButton from "@src/components/watch-list-button/WatchListButton";
 import { createImageErrorHandler } from "@src/utils/constants";
 
 const WatchList = () => {

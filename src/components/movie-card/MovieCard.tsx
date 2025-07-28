@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import Movie from "@src/types/Movie";
-import { WatchListButton } from "@components/index";
+import WatchListButton from "@src/components/watch-list-button/WatchListButton";
 import { StyledMovieCard, WatchListButtonWrapper } from "./styles";
 import { IMAGE_BASE_URL, POSTER_SIZES, createImageErrorHandler } from "@src/utils/constants";
 

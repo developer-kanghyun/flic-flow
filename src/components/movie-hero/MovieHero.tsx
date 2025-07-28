@@ -1,6 +1,7 @@
 import { memo } from "react";
 import Movie from "@src/types/Movie";
-import { WatchListButton, VideoModal } from "@components/index";
+import WatchListButton from "@src/components/watch-list-button/WatchListButton";
+import VideoModal from "@src/components/video-modal/VideoModal";
 import { 
   HeroSection,
   HeroBackdrop,
