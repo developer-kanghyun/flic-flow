@@ -29,9 +29,9 @@ echo "🛑 기존 컨테이너를 정리합니다..."
 docker stop $CONTAINER_NAME 2>/dev/null || true
 docker rm $CONTAINER_NAME 2>/dev/null || true
 
-# Docker 이미지 빌드
+# Docker 이미지 빌드 (캐시 무효화)
 echo "🔨 Docker 이미지를 빌드합니다..."
-docker build -t $IMAGE_NAME .
+docker build --no-cache -t $IMAGE_NAME .
 
 # 포트 사용 확인
 if netstat -tulpn 2>/dev/null | grep -q ":$PORT "; then

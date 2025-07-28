@@ -10,7 +10,11 @@
 
 2. **Docker 빌드**
    ```bash
+   # 일반 빌드
    docker build -t flic-flow .
+   
+   # 캐시 문제 발생시 강제 리빌드
+   docker build --no-cache -t flic-flow .
    ```
 
 3. **Docker 실행**
