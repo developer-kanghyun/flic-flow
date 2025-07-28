@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "@components/header-temp/Header";
+import Header from "@components/header/Header";
 import Footer from "@components/footer/Footer";
 import { StyledLayouts, StyledMain } from "./styles";
 
