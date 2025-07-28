@@ -27,6 +27,9 @@ FROM nginx:stable-alpine
 # Nginx가 기본적으로 파일을 서빙하는 폴더인 '/usr/share/nginx/html'로 복사합니다.
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
+# React Router를 위한 Nginx 설정 파일 복사
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # (선택사항) Nginx가 80번 포트를 사용한다고 명시
 EXPOSE 80
 
