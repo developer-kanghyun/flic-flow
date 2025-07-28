@@ -2,7 +2,6 @@ node_modules
 npm-debug.log
 .git
 .gitignore
-README.md
 .env
 .env.local
 .env.development.local
@@ -14,3 +13,5 @@ coverage
 *.log
 dist
 .DS_Store
+docker-deploy.md
+*.md
