@@ -1,5 +1,5 @@
 import Movie from "@src/types/Movie";
-import RankedMovieCard from "../ranked-movie-card/RankedMovieCard";
+import RankedMovieCard from "@src/components/ranked-movie-card/RankedMovieCard";
 import { StyledTopFiveList, TopFiveGrid } from "./styles";
 
 interface TopFiveListProps {

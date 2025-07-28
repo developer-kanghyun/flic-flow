@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../header/Header";
-import Footer from "../footer/Footer";
+import Header from "@src/components/header/Header";
+import Footer from "@src/components/footer/Footer";
 import { StyledLayouts, StyledMain } from "./styles";
 
 interface LayoutsProps {

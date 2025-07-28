@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Filter from "../filter/Filter";
+import Filter from "@src/components/filter/Filter";
 import { StyledFilterList } from "./styles";
 import { useFilterStore } from "@src/store/filterStore";
 import { getWatchProviders } from "@src/api/tmdbApi";
