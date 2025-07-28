@@ -15,9 +15,9 @@ RUN npm install
 COPY . .
 
 # 파일 시스템 동기화 및 권한 설정
-RUN ls -la src/components/ && \
-    find src/components -name "*ayout*" -type d && \
-    chmod -R 755 src/
+# RUN ls -la src/components/ && \
+#     find src/components -name "*ayout*" -type d && \
+#     chmod -R 755 src/
 
 # React 앱 빌드 실행!
 # "npm run build"는 'dist' 폴더에 최종 HTML/CSS/JS 파일들을 생성합니다.
