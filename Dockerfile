@@ -14,10 +14,15 @@ RUN npm install
 # 프로젝트 소스코드 전체 복사
 COPY . .
 
-# 파일 시스템 동기화 및 권한 설정
-# RUN ls -la src/components/ && \
-#     find src/components -name "*ayout*" -type d && \
-#     chmod -R 755 src/
+# 빌드 시 필요한 모든 환경 변수를 인자로 받도록 선언
+ARG VITE_TMDB_API_KEY
+ARG VITE_OMDB_API_KEY
+ARG VITE_YOUTUBE_API_KEY
+
+# 받은 인자들을 빌드 환경의 환경 변수로 설정
+ENV VITE_TMDB_API_KEY=$VITE_TMDB_API_KEY
+ENV VITE_OMDB_API_KEY=$VITE_OMDB_API_KEY
+ENV VITE_YOUTUBE_API_KEY=$VITE_YOUTUBE_API_KEY
 
 # React 앱 빌드 실행!
 # "npm run build"는 'dist' 폴더에 최종 HTML/CSS/JS 파일들을 생성합니다.
