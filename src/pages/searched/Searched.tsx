@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { StyledSearched, StyledSearchResult } from "@pages/searched/styles";
 import { StyledBody } from "@pages/main/styles";
-import { searchMovies, searchByActor, enhancedSearch, searchByActorWithOTT, searchMoviesWithOTT, filterByOTTAvailability } from "@src/api/tmdbApi";
+import { searchMovies, searchByActor, getContentWatchProviders } from "@src/api/tmdbApi";
 import Movie from "@src/types/Movie";
 import { MovieList } from "@components/index";
 import { useFilterStore } from "@src/store/filterStore";
+
+// 간단한 메모리 캐시
+const searchCache = new Map<string, Movie[]>();
 
 const Searched = () => {
   const [searchParams] = useSearchParams();
@@ -19,6 +22,12 @@ const Searched = () => {
   const { selectedOtts } = useFilterStore();
   const hasOttFilter = selectedOtts.length > 0;
 
+  // 캐시 키 생성
+  const cacheKey = useMemo(() => {
+    if (!query) return '';
+    return `${query}_${searchType || 'general'}_${selectedOtts.join(',')}`;
+  }, [query, searchType, selectedOtts]);
+
   useEffect(() => {
     // 페이지 이동 시 맨 위로 스크롤
     window.scrollTo(0, 0);
@@ -26,6 +35,14 @@ const Searched = () => {
     const fetchMovies = async () => {
       if (!query) {
         setMovies([]);
+        setLoading(false);
+        return;
+      }
+
+      // 캐시 확인
+      if (cacheKey && searchCache.has(cacheKey)) {
+        console.log('Using cached results for:', cacheKey);
+        setMovies(searchCache.get(cacheKey)!);
         setLoading(false);
         return;
       }
@@ -42,54 +59,47 @@ const Searched = () => {
         if (searchType === 'actor') {
           rawResults = await searchByActor(decodedQuery);
         } else {
-          // 배우 검색을 먼저 시도하고, 결과가 없으면 일반 검색
-          const actorResults = await searchByActor(decodedQuery);
-          if (actorResults.length > 0) {
-            // 중복 제거
-            const uniqueResults: Movie[] = [];
-            const seenIds = new Set<number>();
-            
-            actorResults.forEach(movie => {
-              if (!seenIds.has(movie.id)) {
-                seenIds.add(movie.id);
-                uniqueResults.push(movie);
-              }
-            });
-            
-            rawResults = uniqueResults;
-          } else {
-            rawResults = await searchMovies(decodedQuery);
-          }
+          // 일반 검색만 수행 (배우 검색 제거로 성능 개선)
+          rawResults = await searchMovies(decodedQuery);
         }
         
         // OTT 필터가 선택되어 있으면 필터링 적용
         if (hasOttFilter) {
-          // 선택된 OTT 서비스에서 시청 가능한 콘텐츠만 필터링
-          const ottFilteredResults: Movie[] = [];
+          // 병렬 처리로 성능 최적화
+          const moviesToCheck = rawResults.slice(0, 30); // 30개로 제한하여 성능 향상
           
-          for (const movie of rawResults.slice(0, 50)) { // 성능을 위해 첫 50개만 체크
+          const ottPromises = moviesToCheck.map(async (movie) => {
             try {
-              const watchProviders = await import("@src/api/tmdbApi").then(api => 
-                api.getContentWatchProviders(movie.id, movie.media_type)
-              );
+              const watchProviders = await getContentWatchProviders(movie.id, movie.media_type);
               
               if (watchProviders && watchProviders.flatrate) {
                 const hasSelectedOtt = watchProviders.flatrate.some(provider => 
                   selectedOtts.includes(provider.provider_id)
                 );
                 
-                if (hasSelectedOtt) {
-                  ottFilteredResults.push(movie);
-                }
+                return hasSelectedOtt ? movie : null;
               }
+              return null;
             } catch (error) {
               console.log(`OTT check failed for movie ${movie.id}:`, error);
+              return null;
             }
-          }
+          });
           
-          results = ottFilteredResults;
+          const ottResults = await Promise.all(ottPromises);
+          results = ottResults.filter((movie): movie is Movie => movie !== null);
         } else {
           results = rawResults;
+        }
+        
+        // 캐시에 저장
+        if (cacheKey) {
+          searchCache.set(cacheKey, results);
+          // 캐시 크기 제한 (최대 50개)
+          if (searchCache.size > 50) {
+            const firstKey = searchCache.keys().next().value;
+            searchCache.delete(firstKey);
+          }
         }
         
         setMovies(results);
@@ -102,7 +112,7 @@ const Searched = () => {
     };
 
     fetchMovies();
-  }, [query, searchType, selectedOtts]);
+  }, [query, searchType, selectedOtts, cacheKey]);
 
   return (
     <StyledBody>
