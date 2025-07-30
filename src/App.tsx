@@ -5,7 +5,6 @@ import {
   WatchList,
   Recommended,
   Searched,
-  Test,
 } from "@pages/index";
 import Layouts from "@src/components/layouts/Layouts";
 import { useEffect } from "react";
@@ -69,14 +68,6 @@ const App = () => {
         element={
           <Layouts>
             <Searched />
-          </Layouts>
-        }
-      />
-      <Route
-        path="/test"
-        element={
-          <Layouts>
-            <Test />
           </Layouts>
         }
       />

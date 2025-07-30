@@ -1,7 +1,4 @@
-interface Genre {
-  id: number;
-  name: string;
-}
+import { Genre } from './api';
 
 interface ProductionCountry {
   iso_3166_1: string;

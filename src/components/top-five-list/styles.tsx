@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledTopFiveList = styled.section`
   margin-bottom: ${({ theme }) => theme.spacing.xl};

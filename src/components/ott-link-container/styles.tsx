@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const StyledOttLinkContainer = styled.div`
   background: rgba(255, 255, 255, 0.05);

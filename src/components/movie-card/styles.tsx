@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledMovieCard = styled.div`
   background: ${({ theme }) => theme.colors.surface};

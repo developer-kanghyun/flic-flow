@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const StyledMovieInfo = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};

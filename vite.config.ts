@@ -29,11 +29,6 @@ export default defineConfig({
         find: "@pages",
         replacement: path.resolve(__dirname, "src/pages"),
       },
-      {
-        find: "@models",
-        replacement: path.resolve(__dirname, "src/models"),
-      },
-      { find: "@consts", replacement: path.resolve(__dirname, "src/consts") },
     ],
   },
   server: {

@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const StyledSearchResult = styled.h2`
   color: ${({ theme }) => theme.colors.primary};

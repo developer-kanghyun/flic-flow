@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const StyledFilterContainer = styled.div`
   margin-top: 80px; /* 헤더 높이만큼 마진 */
