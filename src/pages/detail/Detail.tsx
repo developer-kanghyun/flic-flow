@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
-import {
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { 
   StyledDetailPage,
   ContentContainer,
   MainContent,
   Sidebar,
-  RecommendationsSection,
+  CastCard,
+  RecommendationsSection
 } from "./styles";
 import MovieHero from "@src/components/movie-hero/MovieHero";
 import MovieMetadata from "@src/components/movie-metadata/MovieMetadata";
@@ -17,7 +18,9 @@ import type { MediaType } from "@src/types/common";
 const Detail = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const mediaType = searchParams.get("type") as MediaType | null;
+  const navigate = useNavigate();
+  const contentId = id;
+  const mediaType = searchParams.get('type') as 'movie' | 'tv' | null;
   
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
@@ -30,6 +33,10 @@ const Detail = () => {
     watchProviders,
     loadingState,
   } = useMovieDetail(id, mediaType);
+
+  const handleActorClick = (actorName: string) => {
+    navigate(`/searched?keyword=${encodeURIComponent(actorName)}&type=actor`);
+  };
 
   const handlePlayTrailer = () => {
     setIsVideoModalOpen(true);
@@ -63,18 +70,37 @@ const Detail = () => {
 
       <ContentContainer>
         <MainContent>
-          <h2>줄거리</h2>
-          <p>{movie.overview || "줄거리 정보가 없습니다."}</p>
+          {/* 출연진 카드 */}
+          {credits?.cast && credits.cast.length > 0 && (
+            <CastCard>
+              <h3>주요 출연진</h3>
+              <div className="cast-grid">
+                {credits.cast.slice(0, 8).map((actor) => (
+                  <div 
+                    key={actor.id} 
+                    className="cast-item"
+                    onClick={() => handleActorClick(actor.name)}
+                  >
+                    {actor.profile_path && (
+                      <img 
+                        src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
+                        alt={actor.name}
+                        className="cast-photo"
+                      />
+                    )}
+                    <div className="cast-info">
+                      <span className="cast-name">{actor.name}</span>
+                      <span className="cast-character">{actor.character}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CastCard>
+          )}
         </MainContent>
 
         <Sidebar>
-          <MovieMetadata
-            movie={movie}
-            ratings={ratings}
-            watchProviders={watchProviders}
-          />
-
-          {credits && <MovieCast credits={credits} />}
+          {/* Sidebar content removed per user request */}
         </Sidebar>
       </ContentContainer>
 

@@ -101,6 +101,186 @@ export const searchMovies = async (query: string, count?: number): Promise<Movie
   }
 };
 
+// 배우 이름으로 영화/TV 검색
+export const searchByActor = async (actorName: string, count?: number): Promise<Movie[]> => {
+  try {
+    console.log('Searching for actor:', actorName);
+    
+    // 먼저 배우를 검색
+    const personResponse = await tmdbApi.get<{ results: { id: number; name: string }[] }>('/search/person', {
+      params: { query: actorName }
+    });
+    
+    console.log('Person search results:', personResponse.data.results);
+    
+    if (personResponse.data.results.length === 0) {
+      console.log('No person found for:', actorName);
+      return [];
+    }
+    
+    const personId = personResponse.data.results[0].id;
+    console.log('Found person ID:', personId);
+    
+    // 해당 배우의 출연작품 검색
+    const creditsResponse = await tmdbApi.get<{
+      cast: Array<Movie & { media_type: 'movie' | 'tv' }>
+    }>(`/person/${personId}/combined_credits`);
+    
+    console.log('Credits response cast length:', creditsResponse.data.cast?.length || 0);
+    console.log('Sample cast items:', creditsResponse.data.cast?.slice(0, 5).map(item => ({ title: item.title, name: item.name, id: item.id })));
+    
+    const results = creditsResponse.data.cast.map(item => ({
+      ...item,
+      media_type: item.media_type || (item.title ? 'movie' : 'tv')
+    }));
+    
+    // 인기도 순으로 정렬
+    results.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    
+    console.log('Final results count:', results.length);
+    console.log('Top 5 results:', results.slice(0, 5).map(item => ({ title: item.title, name: item.name, popularity: item.popularity })));
+    
+    return count ? results.slice(0, count) : results;
+  } catch (error) {
+    console.error('Error searching by actor:', error);
+    // 배우 검색 실패시 일반 검색으로 폴백
+    return searchMovies(actorName, count);
+  }
+};
+
+// 향상된 한글 검색 - 다중 검색 전략
+export const enhancedSearch = async (query: string, count?: number): Promise<Movie[]> => {
+  try {
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return [];
+
+    // 먼저 기본 영화/TV 검색 시도
+    const basicResults = await searchMovies(trimmedQuery);
+    
+    // 기본 검색에서 충분한 결과가 나오면 배우 검색도 추가로 시도
+    let actorResults: Movie[] = [];
+    try {
+      actorResults = await searchByActor(trimmedQuery, 20);
+    } catch (error) {
+      console.log('Actor search failed, continuing with basic results');
+    }
+
+    // 결과 합치기 및 중복 제거
+    const allResults: Movie[] = [];
+    const seenIds = new Set<number>();
+
+    // 기본 검색 결과 먼저 추가 (더 정확함)
+    basicResults.forEach((movie: Movie) => {
+      if (!seenIds.has(movie.id)) {
+        seenIds.add(movie.id);
+        allResults.push(movie);
+      }
+    });
+
+    // 배우 검색 결과 추가 (중복 제거)
+    actorResults.forEach((movie: Movie) => {
+      if (!seenIds.has(movie.id)) {
+        seenIds.add(movie.id);
+        allResults.push(movie);
+      }
+    });
+
+    // 관련성 점수 계산
+    const queryLower = trimmedQuery.toLowerCase();
+    allResults.forEach(movie => {
+      const title = (movie.title || movie.name || '').toLowerCase();
+      const overview = (movie.overview || '').toLowerCase();
+      
+      let relevanceScore = movie.popularity || 0;
+      
+      // 제목에 검색어 포함시 높은 가산점
+      if (title.includes(queryLower)) {
+        relevanceScore += 2000;
+      }
+      // 줄거리에 검색어 포함시 중간 가산점
+      if (overview.includes(queryLower)) {
+        relevanceScore += 500;
+      }
+      
+      (movie as any).relevanceScore = relevanceScore;
+    });
+
+    // 관련성 점수 기준으로 정렬
+    allResults.sort((a, b) => ((b as any).relevanceScore || 0) - ((a as any).relevanceScore || 0));
+
+    return count ? allResults.slice(0, count) : allResults;
+  } catch (error) {
+    console.error('Error in enhanced search:', error);
+    // 폴백: 기본 검색만 사용
+    return searchMovies(query, count);
+  }
+};
+
+// OTT 서비스에서 시청 가능한 콘텐츠만 필터링
+export const filterByOTTAvailability = async (movies: Movie[]): Promise<Movie[]> => {
+  try {
+    const availableMovies: Movie[] = [];
+    
+    // 병렬로 시청 제공업체 확인 (최대 20개씩 처리)
+    const chunks = [];
+    for (let i = 0; i < movies.length; i += 20) {
+      chunks.push(movies.slice(i, i + 20));
+    }
+    
+    for (const chunk of chunks) {
+      const promises = chunk.map(async (movie) => {
+        try {
+          const watchProviders = await getContentWatchProviders(movie.id, movie.media_type);
+          if (watchProviders && watchProviders.flatrate && watchProviders.flatrate.length > 0) {
+            return movie;
+          }
+          return null;
+        } catch (error) {
+          console.log(`Watch provider check failed for movie ${movie.id}:`, error);
+          return null;
+        }
+      });
+      
+      const results = await Promise.all(promises);
+      results.forEach(movie => {
+        if (movie) {
+          availableMovies.push(movie);
+        }
+      });
+    }
+    
+    return availableMovies;
+  } catch (error) {
+    console.error('Error filtering by OTT availability:', error);
+    // 에러 발생시 원본 결과 반환
+    return movies;
+  }
+};
+
+// OTT 필터링이 적용된 배우 검색
+export const searchByActorWithOTT = async (actorName: string, count?: number): Promise<Movie[]> => {
+  try {
+    const allResults = await searchByActor(actorName);
+    const ottFilteredResults = await filterByOTTAvailability(allResults);
+    return count ? ottFilteredResults.slice(0, count) : ottFilteredResults;
+  } catch (error) {
+    console.error('Error in OTT-filtered actor search:', error);
+    return searchByActor(actorName, count);
+  }
+};
+
+// OTT 필터링이 적용된 일반 검색
+export const searchMoviesWithOTT = async (query: string, count?: number): Promise<Movie[]> => {
+  try {
+    const allResults = await searchMovies(query);
+    const ottFilteredResults = await filterByOTTAvailability(allResults);
+    return count ? ottFilteredResults.slice(0, count) : ottFilteredResults;
+  } catch (error) {
+    console.error('Error in OTT-filtered search:', error);
+    return searchMovies(query, count);
+  }
+};
+
 export const getMovieGenres = async (): Promise<Genre[]> => {
   try {
     const response = await tmdbApi.get<{ genres: Genre[] }>('/genre/movie/list');
