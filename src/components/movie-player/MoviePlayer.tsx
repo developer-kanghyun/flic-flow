@@ -8,9 +8,10 @@ import Movie from "@src/types/Movie";
 interface MoviePlayerProps {
   movieId: number;
   movie: Movie; // movie 객체를 prop으로 받도록 추가
+  autoPlay?: boolean; // 자동 재생 옵션 추가
 }
 
-const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
+const MoviePlayer = ({ movieId, movie, autoPlay = false }: MoviePlayerProps) => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [showTrailer, setShowTrailer] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -27,6 +28,10 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
         );
         if (trailer) {
           setTrailerKey(trailer.key);
+          // autoPlay가 true면 바로 재생
+          if (autoPlay) {
+            setShowTrailer(true);
+          }
         } else {
           setError("예고편을 찾을 수 없습니다.");
         }
@@ -39,7 +44,7 @@ const MoviePlayer = ({ movieId, movie }: MoviePlayerProps) => {
     };
 
     fetchTrailer();
-  }, [movieId, movie.media_type]);
+  }, [movieId, movie.media_type, autoPlay]);
 
   const handlePlayClick = () => {
     setShowTrailer(true);

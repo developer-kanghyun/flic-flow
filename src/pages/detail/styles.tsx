@@ -63,86 +63,110 @@ export const PlayButton = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.lg};
   cursor: pointer;
   
   .play-circle {
-    width: 88px;
-    height: 88px;
+    width: 120px;
+    height: 120px;
     border: none;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, 
+      rgba(220, 220, 220, 0.2) 0%, 
+      rgba(192, 192, 192, 0.1) 100%
+    );
+    backdrop-filter: blur(25px);
+    border: 3px solid rgba(192, 192, 192, 0.4);
     border-radius: 50%;
-    color: white;
+    color: #e8e8e8;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(192, 192, 192, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
     &:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: linear-gradient(135deg, 
+        rgba(220, 220, 220, 0.3) 0%, 
+        rgba(192, 192, 192, 0.2) 100%
+      );
+      border-color: rgba(220, 220, 220, 0.6);
       transform: scale(1.1);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(192, 192, 192, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     
     &:active {
-      transform: scale(0.95);
+      transform: scale(1.05);
     }
     
     svg {
-      margin-left: 4px;
-      width: 28px;
-      height: 28px;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      margin-left: 8px;
+      width: 60px;
+      height: 60px;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
     }
   }
   
   .play-text {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f0f0f0;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.5px;
-    opacity: 0.95;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     text-align: center;
+    transition: text-shadow 0.3s ease;
   }
   
   &:hover .play-text {
-    opacity: 1;
+    text-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.8),
+      0 0 12px rgba(192, 192, 192, 0.6);
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    gap: ${({ theme }) => theme.spacing.md};
+    
     .play-circle {
-      width: 76px;
-      height: 76px;
+      width: 100px;
+      height: 100px;
+      border-width: 2px;
       
       svg {
-        width: 24px;
-        height: 24px;
+        width: 48px;
+        height: 48px;
+        margin-left: 6px;
       }
     }
     
     .play-text {
-      font-size: 0.85rem;
+      font-size: 1rem;
     }
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    gap: ${({ theme }) => theme.spacing.sm};
+    
     .play-circle {
-      width: 68px;
-      height: 68px;
+      width: 80px;
+      height: 80px;
       
       svg {
-        width: 20px;
-        height: 20px;
+        width: 36px;
+        height: 36px;
+        margin-left: 4px;
       }
     }
     
     .play-text {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
     }
   }
 `;
@@ -323,6 +347,24 @@ export const HeroContent = styled.div`
       display: flex;
       gap: ${({ theme }) => theme.spacing.md};
       
+      .ott-logo-link {
+        display: inline-block;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.1);
+        }
+        
+        .ott-logo {
+          width: 60px;
+          height: 60px;
+          border-radius: 12px;
+          object-fit: cover;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+      }
+      
       .ott-link-button {
         display: flex;
         align-items: center;
@@ -489,33 +531,11 @@ export const MetadataCard = styled.div`
 `;
 
 export const CastCard = styled.div`
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: ${({ theme }) => theme.spacing.xl};
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, rgba(0, 191, 255, 0.8), rgba(138, 43, 226, 0.6));
-    border-radius: 20px 20px 0 0;
-  }
-  
   h3 {
     font-size: 1.3rem;
     font-weight: 700;
     margin: 0 0 ${({ theme }) => theme.spacing.lg};
     color: ${({ theme }) => theme.colors.text};
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
   }
   
   .cast-grid {
@@ -532,37 +552,19 @@ export const CastCard = styled.div`
   .cast-item {
     display: flex;
     gap: ${({ theme }) => theme.spacing.md};
-    padding: ${({ theme }) => theme.spacing.md};
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-      transition: left 0.5s ease;
-    }
+    padding: ${({ theme }) => theme.spacing.sm};
+    cursor: pointer;
+    transition: all 0.3s ease;
     
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-3px) scale(1.02);
-      border-color: rgba(0, 191, 255, 0.4);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      
-      &::before {
-        left: 100%;
-      }
+      transform: translateY(-2px);
       
       .cast-photo {
         transform: scale(1.05);
+      }
+      
+      .cast-name {
+        color: #fcda54;
       }
     }
     
@@ -570,11 +572,9 @@ export const CastCard = styled.div`
       width: 60px;
       height: 90px;
       object-fit: cover;
-      border-radius: 12px;
+      border-radius: 8px;
       flex-shrink: 0;
       transition: transform 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.1);
     }
     
     .cast-info {
@@ -582,8 +582,6 @@ export const CastCard = styled.div`
       flex-direction: column;
       justify-content: center;
       gap: ${({ theme }) => theme.spacing.sm};
-      z-index: 1;
-      position: relative;
       
       .cast-name {
         font-weight: 700;

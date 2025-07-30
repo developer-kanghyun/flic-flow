@@ -52,7 +52,7 @@ const VideoModal = ({ isOpen, onClose, movieId, movie }: VideoModalProps) => {
           </svg>
         </CloseButton>
         <VideoContainer>
-          <MoviePlayer movieId={movieId} movie={movie} />
+          <MoviePlayer movieId={movieId} movie={movie} autoPlay={true} />
         </VideoContainer>
       </ModalContent>
     </StyledVideoModal>,

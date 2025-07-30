@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { 
   StyledDetailPage,
   HeroSection,
@@ -10,7 +10,6 @@ import {
   ContentContainer,
   MainContent,
   Sidebar,
-  MetadataCard,
   CastCard,
   RecommendationsSection
 } from "./styles";
@@ -23,6 +22,7 @@ import type { Credits, Video, WatchProviderDetails } from "@src/types/api";
 const Detail = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const contentId = id;
   const mediaType = searchParams.get('type') as 'movie' | 'tv' | null;
   
@@ -41,6 +41,10 @@ const Detail = () => {
     rottenTomatoesRating: null
   });
   const [watchProviders, setWatchProviders] = useState<WatchProviderDetails | null>(null);
+
+  const handleActorClick = (actorName: string) => {
+    navigate(`/searched?keyword=${encodeURIComponent(actorName)}&type=actor`);
+  };
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -178,9 +182,13 @@ const Detail = () => {
                       href={finalLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ott-link-button"
+                      className="ott-logo-link"
                     >
-                      {firstProvider.provider_name}에서 시청
+                      <img 
+                        src={`https://image.tmdb.org/t/p/w92${firstProvider.logo_path}`}
+                        alt={firstProvider.provider_name}
+                        className="ott-logo"
+                      />
                     </a>
                   );
                 })()
@@ -193,30 +201,6 @@ const Detail = () => {
       {/* 콘텐츠 영역 */}
       <ContentContainer>
         <MainContent>
-          {/* 메타데이터 카드 */}
-          <MetadataCard>
-            <h3>상세 정보</h3>
-            <div className="metadata-grid">
-              <div className="metadata-item">
-                <span className="label">출시일</span>
-                <span className="value">
-                  {new Date(movie.release_date || movie.first_air_date || '').toLocaleDateString('ko-KR')}
-                </span>
-              </div>
-              {movie.vote_average && (
-                <div className="metadata-item">
-                  <span className="label">평점</span>
-                  <span className="value">★ {movie.vote_average.toFixed(1)}/10</span>
-                </div>
-              )}
-              {director && (
-                <div className="metadata-item">
-                  <span className="label">감독</span>
-                  <span className="value">{director.name}</span>
-                </div>
-              )}
-            </div>
-          </MetadataCard>
 
           {/* 출연진 카드 */}
           {mainCast.length > 0 && (
@@ -224,7 +208,11 @@ const Detail = () => {
               <h3>주요 출연진</h3>
               <div className="cast-grid">
                 {mainCast.map((actor) => (
-                  <div key={actor.id} className="cast-item">
+                  <div 
+                    key={actor.id} 
+                    className="cast-item"
+                    onClick={() => handleActorClick(actor.name)}
+                  >
                     {actor.profile_path && (
                       <img 
                         src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
