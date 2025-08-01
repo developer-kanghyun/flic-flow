@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
-import triangleDown from "../../imgs/triangleDown.png";
+import triangleDown from "@src/imgs/triangleDown.png";
 import {
   StyledAccordion,
   StyledAccordionContent,
@@ -24,9 +24,9 @@ const Accordion = (props: AccordionProps) => {
 
   return (
     <StyledAccordion>
-      <StyledAccordionHeader onClick={handleHeaderClick} isOpen={isOpen}>
+      <StyledAccordionHeader onClick={handleHeaderClick} $isOpen={isOpen}>
         {title}
-        <StyledButton isOpen={isOpen}>
+        <StyledButton $isOpen={isOpen}>
           <img src={triangleDown} alt={isOpen ? "닫기" : "열기"} />
         </StyledButton>
       </StyledAccordionHeader>

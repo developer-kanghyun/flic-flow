@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyledBody } from "./styles";
+import { StyledBody } from '@src/pages/watch-list/styles';
 import Movie from "@src/types/Movie"; // Updated import path
 import { getMovieDetail, tmdbApi } from "@src/api/tmdbApi"; // Import getMovieDetail
 import { Link } from "react-router-dom"; // Import Link

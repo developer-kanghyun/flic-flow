@@ -1,4 +1,4 @@
-import { tmdbApi } from './tmdbApi';
+import { tmdbApi } from '@src/api/tmdbApi';
 import Movie from '@src/types/Movie';
 
 

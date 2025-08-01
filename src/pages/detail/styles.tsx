@@ -440,9 +440,14 @@ export const HeroContent = styled.div`
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: 0 ${({ theme }) => theme.spacing.lg};
+    padding: 0 ${({ theme }) => theme.spacing.md};
     align-items: center;
     justify-content: center;
+    padding-bottom: ${({ theme }) => theme.spacing.lg};
+  }
+
+  @media (max-width: 360px) {
+    padding: 0 ${({ theme }) => theme.spacing.sm};
   }
 `;
 
@@ -455,10 +460,19 @@ export const ContentContainer = styled.div`
   gap: 40px;
   align-items: start;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 20px;
+    gap: 24px;
+    padding: ${({ theme }) => theme.spacing.lg};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+    gap: ${({ theme }) => theme.spacing.lg};
+  }
+
+  @media (max-width: 360px) {
+    padding: ${({ theme }) => theme.spacing.sm};
   }
 `;
 
@@ -565,9 +579,19 @@ export const CastCard = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: ${({ theme }) => theme.spacing.lg};
     
-    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: ${({ theme }) => theme.spacing.md};
+    }
+    
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: ${({ theme }) => theme.spacing.sm};
+    }
+
+    @media (max-width: 360px) {
+      grid-template-columns: 1fr;
+      gap: ${({ theme }) => theme.spacing.xs};
     }
   }
   
@@ -597,6 +621,16 @@ export const CastCard = styled.div`
       border-radius: 8px;
       flex-shrink: 0;
       transition: transform 0.3s ease;
+      
+      @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+        width: 50px;
+        height: 75px;
+      }
+
+      @media (max-width: 360px) {
+        width: 45px;
+        height: 67px;
+      }
     }
     
     .cast-info {

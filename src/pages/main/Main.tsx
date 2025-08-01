@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { StyledBody, StyledMainTopArea, StyledContentArea } from "./styles";
+import { StyledBody, StyledMainTopArea, StyledContentArea } from '@src/pages/main/styles';
 import TagBar from "@src/components/tag-bar/TagBar";
 import SelectedOttsDisplay from "@src/components/selected-otts-display/SelectedOttsDisplay";
 import TopFiveList from "@src/components/top-five-list/TopFiveList";

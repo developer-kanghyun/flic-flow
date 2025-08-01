@@ -8,8 +8,8 @@ import {
 } from "@pages/index";
 import Layouts from "@src/components/layouts/Layouts";
 import { useEffect } from "react";
-import { getMovieGenres, getTvGenres } from "./api/tmdbApi";
-import { useFilterStore } from "./store/filterStore";
+import { getMovieGenres, getTvGenres } from "@src/api/tmdbApi";
+import { useFilterStore } from "@src/store/filterStore";
 
 const App = () => {
   const { setMovieGenres, setTvGenres } = useFilterStore();

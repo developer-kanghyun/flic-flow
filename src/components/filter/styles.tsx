@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-export const StyledFilter = styled.button<{ active: string | undefined }>`
+export const StyledFilter = styled.button<{ $active: string | undefined }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,17 +8,17 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
   padding: ${({ theme }) => theme.spacing.sm}; // Consistent padding
   border-radius: 8px; // Slightly rounded corners for the box
   cursor: pointer;
-  background-color: ${({ theme, active }) =>
-    active ? 'transparent' : theme.colors.surface}; // Active: transparent, Inactive: surface
+  background-color: ${({ theme, $active }) =>
+    $active ? 'transparent' : theme.colors.surface}; // Active: transparent, Inactive: surface
   border: 1px solid; // Border will be dynamic
-  border-color: ${({ active }) =>
-    active ? 'rgba(255, 215, 0, 0.8)' : 'rgba(255, 215, 0, 0.1)'}; // Active: neon, Inactive: subtle neon
+  border-color: ${({ $active }) =>
+    $active ? 'rgba(255, 215, 0, 0.8)' : 'rgba(255, 215, 0, 0.1)'}; // Active: neon, Inactive: subtle neon
   transition: all 0.3s ease;
   min-width: 100px; // Minimum width
   min-height: 100px; // Minimum height
   box-sizing: border-box; // Ensure padding is included in width/height
-  box-shadow: ${({ active }) =>
-    active ? '0 0 15px rgba(255, 215, 0, 0.6)' : '0 0 5px rgba(255, 215, 0, 0.1)'}; // Active: strong neon, Inactive: subtle neon glow
+  box-shadow: ${({ $active }) =>
+    $active ? '0 0 15px rgba(255, 215, 0, 0.6)' : '0 0 5px rgba(255, 215, 0, 0.1)'}; // Active: strong neon, Inactive: subtle neon glow
 
   img {
     width: 50px;
@@ -27,7 +27,7 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
     border-radius: 8px; // Square logo
     object-fit: cover;
     transition: all 0.3s ease;
-    ${({ active }) => !active && `
+    ${({ $active }) => !$active && `
       filter: brightness(0.4); // Darker, but retains color
     `}
   }
@@ -38,19 +38,19 @@ export const StyledFilter = styled.button<{ active: string | undefined }>`
     text-align: center;
     line-height: 1.2;
     z-index: 1;
-    color: ${({ theme, active }) =>
-      active ? theme.colors.text : `rgba(255, 255, 255, 0.6)`}; // Active: text, Inactive: dimmed white
+    color: ${({ theme, $active }) =>
+      $active ? theme.colors.text : `rgba(255, 255, 255, 0.6)`}; // Active: text, Inactive: dimmed white
     transition: color 0.3s ease;
   }
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: ${({ active }) =>
-      active ? '0 0 20px rgba(255, 215, 0, 0.8)' : '0 0 10px rgba(255, 215, 0, 0.4)'}; // Hover: stronger neon glow
-    border-color: ${({ active }) =>
-      active ? 'rgba(255, 215, 0, 1)' : 'rgba(255, 215, 0, 0.6)'}; // Hover: brighter neon
-    background-color: ${({ active }) =>
-      active ? 'rgba(255, 215, 0, 0.1)' : `rgba(255, 255, 255, 0.1)`}; // Active: subtle neon background, Inactive: slightly brighter than surface
+    box-shadow: ${({ $active }) =>
+      $active ? '0 0 20px rgba(255, 215, 0, 0.8)' : '0 0 10px rgba(255, 215, 0, 0.4)'}; // Hover: stronger neon glow
+    border-color: ${({ $active }) =>
+      $active ? 'rgba(255, 215, 0, 1)' : 'rgba(255, 215, 0, 0.6)'}; // Hover: brighter neon
+    background-color: ${({ $active }) =>
+      $active ? 'rgba(255, 215, 0, 0.1)' : `rgba(255, 255, 255, 0.1)`}; // Active: subtle neon background, Inactive: slightly brighter than surface
   }
 
   &:active {

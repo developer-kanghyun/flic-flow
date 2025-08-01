@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { 
   StyledDetailPage,
@@ -7,19 +7,15 @@ import {
   Sidebar,
   CastCard,
   RecommendationsSection
-} from "./styles";
+} from '@src/pages/detail/styles';
 import MovieHero from "@src/components/movie-hero/MovieHero";
-import MovieMetadata from "@src/components/movie-metadata/MovieMetadata";
-import MovieCast from "@src/components/movie-cast/MovieCast";
 import MovieCarousel from "@src/components/movie-carousel/MovieCarousel";
 import { useMovieDetail } from "@src/hooks/useMovieDetail";
-import type { MediaType } from "@src/types/common";
 
 const Detail = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const contentId = id;
   const mediaType = searchParams.get('type') as 'movie' | 'tv' | null;
   
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -66,6 +62,12 @@ const Detail = () => {
         isVideoModalOpen={isVideoModalOpen}
         onPlayTrailer={handlePlayTrailer}
         onCloseModal={handleCloseModal}
+        ratings={{
+          imdbRating: ratings.imdbRating || undefined,
+          rottenTomatoesRating: ratings.rottenTomatoesRating || undefined
+        }}
+        watchProviders={watchProviders}
+        director={credits?.crew?.find(person => person.job === 'Director')}
       />
 
       <ContentContainer>

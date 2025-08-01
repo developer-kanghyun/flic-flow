@@ -98,7 +98,9 @@ const Searched = () => {
           // 캐시 크기 제한 (최대 50개)
           if (searchCache.size > 50) {
             const firstKey = searchCache.keys().next().value;
-            searchCache.delete(firstKey);
+            if (firstKey) {
+              searchCache.delete(firstKey);
+            }
           }
         }
         
@@ -123,7 +125,7 @@ const Searched = () => {
         {!loading && !error && (
           movies.length > 0 ? (
             <div>
-              <p>검색어: "{query ? decodeURIComponent(query) : ''}"</p>
+              <p>검색어: "{query ? decodeURIComponent(query) : 'N/A'}"</p>
               <MovieList movies={movies} />
             </div>
           ) : (

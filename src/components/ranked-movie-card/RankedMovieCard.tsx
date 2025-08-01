@@ -1,17 +1,21 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import Movie from "@src/types/Movie";
 import { WatchListButton } from "@components/index";
 import { StyledRankedMovieCard, RankNumber, WatchListButtonWrapper } from "./styles";
+import { getMediaType, getMovieTitle } from "@src/utils/movieHelpers";
+import { getPosterUrl } from "@src/utils/constants";
 
 interface RankedMovieCardProps {
   movie: Movie;
   rank: number;
 }
 
-const RankedMovieCard = ({ movie, rank }: RankedMovieCardProps) => {
-  const mediaType = movie.name && !movie.title ? 'tv' : 'movie';
+const RankedMovieCard = memo(({ movie, rank }: RankedMovieCardProps) => {
+  const mediaType = getMediaType(movie);
   const detailUrl = `/detail/${movie.id}?type=${mediaType}`;
-  const title = movie.title || movie.name || "제목 없음";
+  const title = getMovieTitle(movie) || "제목 없음";
+  const posterUrl = getPosterUrl(movie.poster_path);
 
   return (
     <StyledRankedMovieCard>
@@ -20,10 +24,11 @@ const RankedMovieCard = ({ movie, rank }: RankedMovieCardProps) => {
         <WatchListButton movieId={movie.id} />
       </WatchListButtonWrapper>
       <Link to={detailUrl}>
-        {movie.poster_path ? (
+        {posterUrl ? (
           <img
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            src={posterUrl}
             alt={title}
+            loading="lazy"
           />
         ) : (
           <div className="no-image">No Image</div>
@@ -31,6 +36,8 @@ const RankedMovieCard = ({ movie, rank }: RankedMovieCardProps) => {
       </Link>
     </StyledRankedMovieCard>
   );
-};
+});
+
+RankedMovieCard.displayName = 'RankedMovieCard';
 
 export default RankedMovieCard;

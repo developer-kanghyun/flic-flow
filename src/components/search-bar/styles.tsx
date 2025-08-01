@@ -26,8 +26,13 @@ export const StyledSearchBar = styled.div`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    width: 240px;
-    height: 34px;
+    width: 200px;
+    height: 36px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 140px;
+    height: 32px;
   }
 `;
 
@@ -47,6 +52,11 @@ export const StyledSearchInput = styled.input`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     padding: 0 12px;
     font-size: 13px;
   }
@@ -66,6 +76,8 @@ export const StyledSearchButton = styled(Link)`
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &::before {
     content: '';
@@ -105,13 +117,27 @@ export const StyledSearchButton = styled(Link)`
     }
   }
 
+  &:active {
+    transform: scale(0.95);
+  }
+
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     
     img {
-      width: 14px;
-      height: 14px;
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 32px;
+    height: 32px;
+    
+    img {
+      width: 13px;
+      height: 13px;
     }
   }
 `;

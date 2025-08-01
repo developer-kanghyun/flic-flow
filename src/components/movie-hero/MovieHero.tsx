@@ -2,13 +2,16 @@ import { memo } from "react";
 import Movie from "@src/types/Movie";
 import WatchListButton from "@src/components/watch-list-button/WatchListButton";
 import VideoModal from "@src/components/video-modal/VideoModal";
+import { getBackdropUrl } from "@src/utils/constants";
+import { getMovieTitle, getReleaseYear } from "@src/utils/movieHelpers";
 import { 
   HeroSection,
   HeroBackdrop,
   HeroOverlay,
   HeroContent,
   PlayButton 
-} from "./styles";
+} from "@pages/detail/styles";
+import { OTT_SEARCH_URLS } from "@src/utils/constants";
 
 interface MovieHeroProps {
   movie: Movie;
@@ -16,6 +19,12 @@ interface MovieHeroProps {
   isVideoModalOpen: boolean;
   onPlayTrailer: () => void;
   onCloseModal: () => void;
+  ratings?: {
+    imdbRating?: string;
+    rottenTomatoesRating?: string;
+  };
+  watchProviders?: any;
+  director?: { name: string };
 }
 
 const MovieHero = memo(({ 
@@ -23,45 +32,96 @@ const MovieHero = memo(({
   hasTrailer, 
   isVideoModalOpen, 
   onPlayTrailer, 
-  onCloseModal 
+  onCloseModal,
+  ratings = {},
+  watchProviders,
+  director
 }: MovieHeroProps) => {
-  const backdropUrl = movie.backdrop_path
-    ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
-    : null;
+  const backdropUrl = getBackdropUrl(movie.backdrop_path);
+  const title = getMovieTitle(movie);
+  const releaseYear = getReleaseYear(movie);
 
-  const releaseYear = movie.release_date
-    ? new Date(movie.release_date).getFullYear()
-    : movie.first_air_date
-    ? new Date(movie.first_air_date).getFullYear()
-    : null;
 
   return (
     <>
       <HeroSection>
         {backdropUrl && (
-          <HeroBackdrop>
-            <img src={backdropUrl} alt={movie.title || movie.name} />
-            <HeroOverlay />
-          </HeroBackdrop>
+          <HeroBackdrop 
+            src={backdropUrl} 
+            alt={title}
+          />
         )}
-        
+        <HeroOverlay />
+        {hasTrailer && (
+          <PlayButton onClick={onPlayTrailer}>
+            <button className="play-circle">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+            <span className="play-text">예고편 보기</span>
+          </PlayButton>
+        )}
         <HeroContent>
-          <div className="hero-info">
-            <h1>{movie.title || movie.name}</h1>
-            {releaseYear && <span className="year">({releaseYear})</span>}
-            
-            <div className="hero-actions">
-              {hasTrailer && (
-                <PlayButton onClick={onPlayTrailer}>
-                  ▶ 예고편 보기
-                </PlayButton>
+          <div className="hero-text">
+            <h1>{title}</h1>
+            <div className="hero-meta">
+              <div className="watchlist-wrapper">
+                <WatchListButton movieId={movie.id} />
+              </div>
+              <div className="imdb-rating">
+                <span className="imdb-label">IMDB</span>
+                <span className="rating-score">
+                  {ratings.imdbRating || movie.vote_average?.toFixed(1) || '8.2'}
+                </span>
+              </div>
+              <div className="rotten-tomatoes">
+                <span className="rt-label">🍅</span>
+                <span className="rt-score">
+                  {ratings.rottenTomatoesRating || `${Math.round((movie.vote_average || 8.2) * 8.5)}%`}
+                </span>
+              </div>
+              <span className="release-year">
+                {releaseYear || '2024'}
+              </span>
+              {director && (
+                <span className="director">감독: {director.name}</span>
               )}
-              <WatchListButton movieId={movie.id} />
             </div>
-            
-            {movie.overview && (
-              <p className="overview">{movie.overview}</p>
-            )}
+            <p className="overview">{movie.overview}</p>
+            <div className="hero-actions">
+              {watchProviders && watchProviders.flatrate && watchProviders.flatrate.length > 0 && (
+                (() => {
+                  // Netflix Standard with Ads 제외한 첫 번째 스트리밍 서비스
+                  const streamingProviders = watchProviders.flatrate.filter(
+                    (provider: any) => !provider.provider_name.includes('Standard with Ads')
+                  );
+                  
+                  if (streamingProviders.length === 0) return null;
+                  
+                  const firstProvider = streamingProviders[0];
+                  const ottSearchBaseUrl = OTT_SEARCH_URLS[firstProvider.provider_name];
+                  const finalLink = ottSearchBaseUrl 
+                    ? `${ottSearchBaseUrl}${encodeURIComponent(title || "")}`
+                    : watchProviders.link;
+                  
+                  return (
+                    <a 
+                      href={finalLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ott-logo-link"
+                    >
+                      <img 
+                        src={`https://image.tmdb.org/t/p/w92${firstProvider.logo_path}`}
+                        alt={firstProvider.provider_name}
+                        className="ott-logo"
+                      />
+                    </a>
+                  );
+                })()
+              )}
+            </div>
           </div>
         </HeroContent>
       </HeroSection>

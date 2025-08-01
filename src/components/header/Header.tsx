@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Logo from "@src/components/logo/Logo";
 import SearchBar from "@src/components/search-bar/SearchBar";
 import FilterList from "@src/components/filter-list/FilterList";
@@ -8,6 +8,18 @@ import triangleDown from "@src/imgs/triangleDown.png";
 
 const Header = () => {
   const [isServiceOpen, setIsServiceOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 430);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const toggleService = () => {
     setIsServiceOpen(prev => !prev);
@@ -18,7 +30,7 @@ const Header = () => {
       <StyledHeader>
         <div className="header-left">
           <Logo />
-          <StyledServiceToggle onClick={toggleService} isOpen={isServiceOpen}>
+          <StyledServiceToggle onClick={toggleService} $isOpen={isServiceOpen}>
             서비스 목록
             <img src={triangleDown} alt={isServiceOpen ? "닫기" : "열기"} />
           </StyledServiceToggle>
@@ -30,7 +42,7 @@ const Header = () => {
           </StyledWatchListIcon>
         </div>
       </StyledHeader>
-      <StyledAccordionContent isOpen={isServiceOpen}>
+      <StyledAccordionContent $isOpen={isServiceOpen}>
         <FilterList />
       </StyledAccordionContent>
     </StyledHeaderContainer>

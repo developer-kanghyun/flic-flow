@@ -2,10 +2,14 @@ import styled from "styled-components";
 
 export const StyledBody = styled.div`
   min-height: 100vh;
-  padding-top: 60px;
+  padding-top: 80px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding-top: 56px;
+    padding-top: 70px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding-top: 60px;
   }
 `;
 
@@ -16,6 +20,10 @@ export const StyledMainTopArea = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.sm};
   }
 `;
 
@@ -30,6 +38,7 @@ export const StyledContentArea = styled.div`
       font-weight: 600;
       color: ${({ theme }) => theme.colors.text};
       margin-bottom: ${({ theme }) => theme.spacing.md};
+      padding: 0 ${({ theme }) => theme.spacing.sm};
     }
   }
 
@@ -50,9 +59,28 @@ export const StyledContentArea = styled.div`
       margin-bottom: ${({ theme }) => theme.spacing.lg};
       
       h2 {
-        font-size: 16px;
+        font-size: 17px;
         margin-bottom: ${({ theme }) => theme.spacing.sm};
       }
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.sm};
+    
+    section {
+      margin-bottom: ${({ theme }) => theme.spacing.md};
+      
+      h2 {
+        font-size: 16px;
+        margin-bottom: ${({ theme }) => theme.spacing.sm};
+        padding: 0 ${({ theme }) => theme.spacing.xs};
+      }
+    }
+    
+    .loading, .error, .no-results {
+      padding: ${({ theme }) => theme.spacing.lg};
+      font-size: 14px;
     }
   }
 `;

@@ -1,7 +1,7 @@
 // 모든 타입들을 중앙에서 관리하는 파일
 
 // Movie 관련 타입들
-export { default as Movie } from './Movie';
+export type { default as Movie } from './Movie';
 
 // API 관련 타입들
 export type {

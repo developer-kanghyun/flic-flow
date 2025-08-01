@@ -6,13 +6,13 @@ export const StyledAccordion = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
-export const StyledAccordionHeader = styled.div<{ isOpen: boolean }>`
+export const StyledAccordionHeader = styled.div<{ $isOpen: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
   background: transparent;
-  color: ${({ theme, isOpen }) => isOpen ? theme.colors.primary : theme.colors.text};
+  color: ${({ theme, $isOpen }) => $isOpen ? theme.colors.primary : theme.colors.text};
   font-size: 20px;
   font-weight: 500;
   cursor: pointer;
@@ -38,7 +38,7 @@ export const StyledAccordionContent = styled.div`
   background: ${({ theme }) => theme.colors.surface};
 `;
 
-export const StyledButton = styled.button<{ isOpen: boolean }>`
+export const StyledButton = styled.button<{ $isOpen: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
@@ -53,7 +53,7 @@ export const StyledButton = styled.button<{ isOpen: boolean }>`
     height: 16px;
     filter: invert(80%);
     transition: transform 0.3s ease-in-out;
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   }
 
   &:hover {

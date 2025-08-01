@@ -45,7 +45,41 @@ export const POSTER_SIZES = {
   SMALL: 'w185',
   MEDIUM: 'w342',
   LARGE: 'w500',
+  XLARGE: 'w780',
+  BACKDROP: 'w1280',
   ORIGINAL: 'original',
+} as const;
+
+// Image URL utility functions
+export const getImageUrl = (path: string | null | undefined, size: keyof typeof POSTER_SIZES = 'LARGE'): string | null => {
+  if (!path) return null;
+  return `${IMAGE_BASE_URL}${POSTER_SIZES[size]}${path}`;
+};
+
+export const getPosterUrl = (posterPath: string | null | undefined): string | null => {
+  return getImageUrl(posterPath, 'LARGE');
+};
+
+export const getBackdropUrl = (backdropPath: string | null | undefined): string | null => {
+  return getImageUrl(backdropPath, 'BACKDROP');
+};
+
+export const getProfileUrl = (profilePath: string | null | undefined): string | null => {
+  return getImageUrl(profilePath, 'SMALL');
+};
+
+// OTT service search URLs
+export const OTT_SEARCH_URLS: Record<string, string> = {
+  'Netflix': 'https://www.netflix.com/search?q=',
+  'Disney Plus': 'https://www.disneyplus.com/search/',
+  'Amazon Prime Video': 'https://www.primevideo.com/search/ref=atv_nb_sr?phrase=',
+  'Apple TV Plus': 'https://tv.apple.com/search?term=',
+  'Hulu': 'https://www.hulu.com/search?q=',
+  'Paramount Plus': 'https://www.paramountplus.com/search/',
+  'HBO Max': 'https://www.max.com/search?q=',
+  'Peacock': 'https://www.peacocktv.com/search?q=',
+  'Crunchyroll': 'https://www.crunchyroll.com/search?q=',
+  'Funimation': 'https://www.funimation.com/search/',
 } as const;
 
 // Image error handling utility

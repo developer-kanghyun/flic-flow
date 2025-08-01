@@ -68,6 +68,10 @@ export const StyledLogo = styled(Link)`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    font-size: 25px;
+    font-size: 26px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: 22px;
   }
 `;

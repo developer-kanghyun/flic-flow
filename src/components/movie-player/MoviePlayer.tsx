@@ -26,10 +26,6 @@ const MoviePlayer = ({ movieId, movie, autoPlay = false }: MoviePlayerProps) => 
         );
         if (trailer) {
           setTrailerKey(trailer.key);
-          // autoPlay가 true면 바로 재생
-          if (autoPlay) {
-            setShowTrailer(true);
-          }
         } else {
           setError("예고편을 찾을 수 없습니다.");
         }

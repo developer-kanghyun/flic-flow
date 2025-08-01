@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo, memo } from "react";
+import { useState, useRef, useCallback, useMemo, memo, useEffect } from "react";
 import Movie from "@src/types/Movie";
 import { MovieCard } from "@components/index";
 import { 
@@ -15,14 +15,27 @@ interface MovieCarouselProps {
 }
 
 const CAROUSEL_CONFIG = {
-  MOBILE: { width: 146, visibleItems: 5 },
-  TABLET: { width: 171, visibleItems: 7 },
+  MOBILE: { width: 130, visibleItems: 3 },
+  TABLET: { width: 156, visibleItems: 5 },
   DESKTOP: { width: 196, visibleItems: 7 },
 } as const;
 
 const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 430);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   const { itemWidth, visibleItems, maxScroll } = useMemo(() => {
     const getConfig = () => {
@@ -55,6 +68,34 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
     }
   }, [scrollPosition, maxScroll, itemWidth, visibleItems]);
 
+  // 터치/스와이프 기능
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && scrollPosition < maxScroll) {
+      scrollRight();
+    }
+    if (isRightSwipe && scrollPosition > 0) {
+      scrollLeft();
+    }
+  };
+
   if (movies.length === 0) return null;
 
   return (
@@ -63,8 +104,13 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
         <h3>{title}</h3>
       </CarouselHeader>
       
-      <CarouselContent>
-        {scrollPosition > 0 && (
+      <CarouselContent
+        ref={contentRef}
+        onTouchStart={isMobile ? onTouchStart : undefined}
+        onTouchMove={isMobile ? onTouchMove : undefined}
+        onTouchEnd={isMobile ? onTouchEnd : undefined}
+      >
+        {!isMobile && scrollPosition > 0 && (
           <CarouselButton className="prev" onClick={scrollLeft}>
             ‹
           </CarouselButton>
@@ -78,7 +124,7 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
           ))}
         </CarouselTrack>
         
-        {scrollPosition < maxScroll && (
+        {!isMobile && scrollPosition < maxScroll && (
           <CarouselButton className="next" onClick={scrollRight}>
             ›
           </CarouselButton>

@@ -38,7 +38,7 @@ export const StyledHeader = styled.header`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: 0 ${({ theme }) => theme.spacing.md};
-    height: 56px;
+    height: 70px;
 
     .header-left {
       gap: ${({ theme }) => theme.spacing.md};
@@ -48,12 +48,25 @@ export const StyledHeader = styled.header`
       gap: ${({ theme }) => theme.spacing.sm};
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: 0 ${({ theme }) => theme.spacing.sm};
+    height: 60px;
+
+    .header-left {
+      gap: ${({ theme }) => theme.spacing.sm};
+    }
+
+    .header-right {
+      gap: ${({ theme }) => theme.spacing.xs};
+    }
+  }
 `;
 
-export const StyledServiceToggle = styled.button<{ isOpen: boolean }>`
+export const StyledServiceToggle = styled.button<{ $isOpen: boolean }>`
   background: transparent;
   border: none;
-  color: ${({ theme, isOpen }) => isOpen 
+  color: ${({ theme, $isOpen }) => $isOpen 
     ? theme.colors.primary 
     : theme.colors.text
   };
@@ -66,39 +79,56 @@ export const StyledServiceToggle = styled.button<{ isOpen: boolean }>`
   padding: 8px 12px;
   border-radius: 4px;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 
   img {
     width: 12px;
     height: 12px;
     transition: transform 0.2s ease;
-    transform: ${({ isOpen }) => isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+    transform: ${({ $isOpen }) => $isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    font-size: 16px;
+    padding: 6px 10px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     font-size: 14px;
-    padding: 6px 8px;
+    padding: 4px 8px;
+    gap: 6px;
+    
+    img {
+      width: 10px;
+      height: 10px;
+    }
   }
 `;
 
-export const StyledAccordionContent = styled.div<{ isOpen: boolean }>`
+export const StyledAccordionContent = styled.div<{ $isOpen: boolean }>`
   overflow: hidden;
   transition: max-height 0.3s ease, padding 0.3s ease;
-  max-height: ${({ isOpen }) => isOpen ? '300px' : '0'};
+  max-height: ${({ $isOpen }) => $isOpen ? '300px' : '0'};
   background: linear-gradient(180deg, 
     rgba(20, 20, 20, 0.98) 0%,
     rgba(15, 15, 15, 0.95) 100%
   );
-  border-bottom: ${({ isOpen }) => isOpen ? '1px solid rgba(255, 133, 0, 0.2)' : 'none'};
-  box-shadow: ${({ isOpen }) => isOpen ? 'inset 0 4px 8px rgba(0, 0, 0, 0.3)' : 'none'};
-  padding: ${({ isOpen }) => isOpen ? '24px' : '0 24px'};
-  border-top: ${({ isOpen }) => isOpen ? '1px solid rgba(255, 133, 0, 0.1)' : 'none'};
+  border-bottom: ${({ $isOpen }) => $isOpen ? '1px solid rgba(255, 133, 0, 0.2)' : 'none'};
+  box-shadow: ${({ $isOpen }) => $isOpen ? 'inset 0 4px 8px rgba(0, 0, 0, 0.3)' : 'none'};
+  padding: ${({ $isOpen }) => $isOpen ? '24px' : '0 24px'};
+  border-top: ${({ $isOpen }) => $isOpen ? '1px solid rgba(255, 133, 0, 0.1)' : 'none'};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding: ${({ isOpen }) => isOpen ? '20px' : '0 20px'};
+    padding: ${({ $isOpen }) => $isOpen ? '20px' : '0 20px'};
   }
 `;
 
@@ -117,6 +147,8 @@ export const StyledWatchListIcon = styled(Link)`
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &::before {
     content: '';
@@ -159,13 +191,27 @@ export const StyledWatchListIcon = styled(Link)`
     }
   }
 
+  &:active {
+    transform: scale(0.95);
+  }
+
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    width: 38px;
+    width: 40px;
     height: 32px;
     
     img {
       width: 18px;
       height: 18px;
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 36px;
+    height: 30px;
+    
+    img {
+      width: 16px;
+      height: 16px;
     }
   }
 `;

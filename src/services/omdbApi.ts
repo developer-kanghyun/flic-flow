@@ -14,12 +14,17 @@ interface OMDBResponse {
 
 export const fetchOMDBRatings = async (imdbId: string) => {
   try {
+    // API 키가 설정되지 않은 경우 조용히 null 반환
+    if (!OMDB_API_KEY || OMDB_API_KEY === 'your_omdb_api_key') {
+      return null;
+    }
+    
     const response = await fetch(
       `${OMDB_BASE_URL}?i=${imdbId}&apikey=${OMDB_API_KEY}`
     );
     
     if (!response.ok) {
-      throw new Error('OMDB API request failed');
+      return null; // 에러 로그 대신 조용히 실패
     }
     
     const data: OMDBResponse = await response.json();
@@ -37,7 +42,7 @@ export const fetchOMDBRatings = async (imdbId: string) => {
       rottenTomatoesRating: rottenTomatoesRating || null
     };
   } catch (error) {
-    console.error('Error fetching OMDB ratings:', error);
+    // 조용히 실패 - 에러 로그 제거
     return null;
   }
 };

@@ -5,6 +5,22 @@ import { getTruePopularContent } from '@src/api/truePopularityApi';
 import Movie from '@src/types/Movie';
 import type { MediaType, TagKey } from '@src/types/common';
 
+// Media type determination utility
+export const getMediaType = (movie: Movie): 'movie' | 'tv' => {
+  return movie.name && !movie.title ? 'tv' : 'movie';
+};
+
+// Movie title utility
+export const getMovieTitle = (movie: Movie): string => {
+  return movie.title || movie.name || '';
+};
+
+// Release year utility
+export const getReleaseYear = (movie: Movie): number | null => {
+  const date = movie.release_date || movie.first_air_date;
+  return date ? new Date(date).getFullYear() : null;
+};
+
 export interface BaseParams {
   ottIds?: number[];
 }

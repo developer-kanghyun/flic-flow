@@ -1,4 +1,4 @@
-import { tmdbApi } from './tmdbApi';
+import { tmdbApi } from '@src/api/tmdbApi';
 import Movie from '@src/types/Movie';
 
 // 장르별 순수 인기도(시청률) 기준 트렌딩 콘텐츠
@@ -63,7 +63,6 @@ export const getGenreBasedTrending = async (genreIds: number[], count: number = 
 
     return filteredResults.slice(0, count);
   } catch (error) {
-    console.error('Error fetching genre-based trending:', error);
     throw error;
   }
 };

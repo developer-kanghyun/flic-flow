@@ -3,20 +3,18 @@ import { Link } from "react-router-dom";
 import Movie from "@src/types/Movie";
 import WatchListButton from "@src/components/watch-list-button/WatchListButton";
 import { StyledMovieCard, WatchListButtonWrapper } from "./styles";
-import { IMAGE_BASE_URL, POSTER_SIZES, createImageErrorHandler } from "@src/utils/constants";
+import { createImageErrorHandler, getPosterUrl } from "@src/utils/constants";
+import { getMediaType, getMovieTitle } from "@src/utils/movieHelpers";
 
 interface MovieCardProps {
   movie: Movie;
 }
 
 const MovieCard = memo(({ movie }: MovieCardProps) => {
-  const posterUrl = movie.poster_path 
-    ? `${IMAGE_BASE_URL}${POSTER_SIZES.MEDIUM}${movie.poster_path}`
-    : null;
-
-  // 콘텐츠 타입 결정: name이 있고 title이 없으면 TV, 그렇지 않으면 movie
-  const mediaType = movie.name && !movie.title ? 'tv' : 'movie';
+  const posterUrl = getPosterUrl(movie.poster_path);
+  const mediaType = getMediaType(movie);
   const detailUrl = `/detail/${movie.id}?type=${mediaType}`;
+  const title = getMovieTitle(movie);
 
   return (
     <StyledMovieCard>
@@ -27,7 +25,7 @@ const MovieCard = memo(({ movie }: MovieCardProps) => {
         {posterUrl ? (
           <img
             src={posterUrl}
-            alt={movie.title || movie.name || "Movie"}
+            alt={title || "Movie"}
             loading="lazy"
             onError={createImageErrorHandler(movie.poster_path || undefined)}
           />
