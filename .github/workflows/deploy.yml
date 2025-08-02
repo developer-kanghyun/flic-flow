@@ -69,7 +69,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 2-4. 최종 이미지 빌드 및 Docker Hub에 푸시
+      # 2-4. 네트워크 연결 테스트
+      - name: Test network connectivity to server
+        run: |
+          echo "Testing connectivity to server..."
+          ping -c 3 ${{ secrets.SERVER_HOST }} || echo "Ping failed"
+          nc -zv ${{ secrets.SERVER_HOST }} 22 || echo "Port 22 not accessible"
+          
+      # 2-5. 최종 이미지 빌드 및 Docker Hub에 푸시
       # 이번에는 환경 변수를 build-args로 전달하는 것이 더 안전하고 표준적인 방식
       - name: Build and push final image to Docker Hub
         uses: docker/build-push-action@v5
@@ -82,13 +89,31 @@ jobs:
             VITE_OMDB_API_KEY=${{ secrets.VITE_OMDB_API_KEY }}
             VITE_YOUTUBE_API_KEY=${{ secrets.VITE_YOUTUBE_API_KEY }}
 
-      # 2-5. SSH를 통해 실제 서버에 배포
+      # 2-5. SSH 연결 테스트
+      - name: Test SSH connection
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          timeout: 30s
+          command_timeout: 10s
+          script: |
+            echo "SSH connection successful!"
+            whoami
+            docker --version
+            
+      # 2-6. SSH를 통해 실제 서버에 배포
       - name: Deploy to production server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          timeout: 60s
+          command_timeout: 30s
           script: |
             echo "--- Starting deployment on server ---"
 
