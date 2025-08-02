@@ -45,11 +45,13 @@ jobs:
           docker stop test-container
           docker rm test-container
 
-  # 2. 배포 잡 (Deploy Job)
+  # 2. 배포 잡 (Deploy Job) - 현재 비활성화
   deploy:
     # 'build_and_test' 잡이 성공해야만 이 잡이 실행됨
     needs: build_and_test
     runs-on: ubuntu-latest
+    # SSH 연결 문제로 임시 비활성화
+    if: false
 
     steps:
       # 2-1. 소스코드 다시 가져오기
