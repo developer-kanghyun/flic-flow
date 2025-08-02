@@ -1,15 +1,33 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "skipLibCheck": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
     "baseUrl": ".",
+    "outDir": "./dist",
     "paths": {
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@pages/*": ["./src/pages/*"],
-      "@consts/*" : ["./src/consts/*"],
-      "@models/*": ["./src/models/*"]
+      "@consts/*": ["./src/consts/*"],
+      "@models/*": ["./src/models/*"],
+      "@src/*": ["./src/*"]
     },
-    "jsx": "react-jsx"
-  }
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["styled-components/cssprop", "styled-components"]
+  },
+  "include": ["src"]
 }

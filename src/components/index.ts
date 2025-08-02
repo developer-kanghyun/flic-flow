@@ -1,29 +1,32 @@
-export { default as Header } from "./header/Header";
-export { default as Footer } from "./footer/Footer";
-export { default as Layouts } from "./layouts/Layouts";
+// Only export components that have NO internal dependencies
+// Layout components are imported directly in pages to avoid circular dependencies
+
+// Basic UI components
 export { default as WatchListButton } from "./watch-list-button/WatchListButton";
+export { default as MovieCard } from "./movie-card/MovieCard";
 export { default as Logo } from "./logo/Logo";
 export { default as SearchBar } from "./search-bar/SearchBar";
 
-export { default as FilterContainer } from "./filter-container/FilterContainer";
-export { default as FilterList } from "./filter-list/FilterList";
 export { default as Filter } from "./filter/Filter";
-export { default as RecommendContainer } from "./recommend-container/RecommendContainer";
-export { default as Recommend } from "./recommend/Recommend";
-export { default as RankingContainer } from "./ranking-container/RankingContainer";
-export { default as RankingList } from "./ranking-list/RankingList";
-export { default as Ranking } from "./ranking/Ranking";
-
+export { default as TagBar } from "./tag-bar/TagBar";
 export { default as Accordion } from "./accordion/Accordion";
-export { default as Comedy } from "./comedy/Comedy";
-export { default as Drama } from "./drama/Drama";
-export { default as Popular } from "./popular/Popular";
-export { default as New } from "./new/New";
-export { default as Sports } from "./sports/Sports";
 
-export { default as MoviePlayerContainer } from "./movie-player-container/MoviePlayerContainer";
 export { default as MoviePlayer } from "./movie-player/MoviePlayer";
-export { default as MovieInfoContainer } from "./movie-info-container/MovieInfoContainer";
 export { default as MovieInfo } from "./movie-info/MovieInfo";
-export { default as OttLinkContainer } from "./ott-link-container/OttLinkContainer";
 export { default as OttLink } from "./ott-link/OttLink";
+export { default as MovieList } from "./movie-list/MovieList";
+export { default as RankedMovieCard } from "./ranked-movie-card/RankedMovieCard";
+export { default as TopFiveList } from "./top-five-list/TopFiveList";
+
+export { VideoModal } from "./video-modal";
+
+// Detail page components
+export { default as MovieHero } from "./movie-hero/MovieHero";
+export { default as MovieMetadata } from "./movie-metadata/MovieMetadata";
+export { default as MovieCast } from "./movie-cast/MovieCast";
+
+// NOTE: Header, Footer, Layouts and other container components are NOT exported here
+// to avoid circular dependencies. Import them directly where needed:
+// import Header from "@src/components/header/Header";
+// import Footer from "@src/components/footer/Footer";
+// import Layouts from "@src/components/layouts/Layouts";

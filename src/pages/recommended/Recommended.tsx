@@ -1,5 +1,4 @@
-import React from "react";
-import { StyledBody, StyledRecommended, StyledRecommendResult } from "./styles";
+import { StyledBody, StyledRecommended, StyledRecommendResult } from '@src/pages/recommended/styles';
 import { useParams } from "react-router-dom";
 
 const Recommended = () => {

@@ -1,48 +1,96 @@
-import React, { useEffect, useState } from "react";
-import { StyledBody } from "./styles";
-import { Movie } from "@models/Movie";
-import { StyledRanking } from "@components/ranking/styles";
-import { StyledRankingContainer } from "@components/ranking-container/styles";
-import { StyledRankingList } from "@components/ranking-list/styles";
+import { useEffect, useState } from "react";
+import { StyledBody } from '@src/pages/watch-list/styles';
+import Movie from "@src/types/Movie"; // Updated import path
+import { getMovieDetail, tmdbApi } from "@src/api/tmdbApi"; // Import getMovieDetail
+import { Link } from "react-router-dom"; // Import Link
+import WatchListButton from "@src/components/watch-list-button/WatchListButton";
+import { createImageErrorHandler } from "@src/utils/constants";
 
 const WatchList = () => {
-  // 1. 화면에 보여줄 영화 목록을 저장할 상태 만들기
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 2. 컴포넌트가 처음 화면에 나타날 때 실행되는 부분
   useEffect(() => {
-    // 2-1. 로컬스토리지에서 "WatchList"라는 이름으로 저장된 데이터 꺼내오기
-    const saved = localStorage.getItem("watchList");
-    let watchList = [];
-    if (saved) {
-      // 2-2. 문자열로 저장된 데이터를 실제 배열로 변환
-      watchList = JSON.parse(saved);
-    }
-    // 2-3. 상태에 저장 (화면에 보여주기 위해)
-    setMovies(watchList);
-  }, []); // []는 컴포넌트가 처음 나타날 때만 실행
+    const fetchWatchlistMovies = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const savedWatchlist = JSON.parse(localStorage.getItem("watchlist") || "[]");
+        const validMovieIds = savedWatchlist.filter((id: unknown) => typeof id === 'number' && !isNaN(id));
+
+        if (validMovieIds.length === 0) {
+          setMovies([]);
+          setLoading(false);
+          return;
+        }
+
+        const movieDetailsPromises = validMovieIds.map(async (movieId: number) => {
+          try {
+            // 먼저 영화로 시도
+            return await getMovieDetail(movieId);
+          } catch (error) {
+            try {
+              // 영화로 실패하면 TV로 시도
+              const response = await tmdbApi.get(`/tv/${movieId}`);
+              return { ...response.data, media_type: 'tv' as const };
+            } catch (tvError) {
+              console.error(`Failed to fetch both movie and TV for ID ${movieId}:`, error, tvError);
+              throw error;
+            }
+          }
+        });
+        const fetchedMovies = await Promise.all(movieDetailsPromises);
+        setMovies(fetchedMovies);
+      } catch (err) {
+        console.error("Error fetching watchlist movies:", err);
+        setError("찜한 영화를 불러오는 데 실패했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWatchlistMovies();
+  }, []);
+
+  if (loading) return <p>찜한 영화 로딩 중...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <StyledBody>
-      {/*3. 찜한 영화가 없으면 안내 메시지 보여주기 */}
+      <h1>찜한 영화</h1>
       {movies.length === 0 ? (
-        <h1>저장된 콘텐츠가 없습니다.</h1>
+        <div className="empty-state">
+          <div className="empty-icon">🎬</div>
+          <h2>아직 찜한 영화가 없어요</h2>
+          <p>좋아하는 영화나 TV 프로그램을 찜하여 나중에 시청해보세요!</p>
+          <div className="empty-actions">
+            <Link to="/" className="discover-btn">
+              인기 영화 둘러보기
+            </Link>
+          </div>
+        </div>
       ) : (
-        // 4. 찜한 영화가 있으면 목록으로 보여주기
         <ul>
-          <StyledRankingContainer>
-            <StyledRankingList>
-              <StyledRanking>
-                {movies.map((movie) => (
-                  <li key={movie.id}>
-                    <p>{movie.title}</p>
-                    <p>{movie.thumbnail}</p>
-                    <p>{movie.id}</p>
-                  </li>
-                ))}
-              </StyledRanking>
-            </StyledRankingList>
-          </StyledRankingContainer>
+          {movies.map((movie) => (
+            <li key={movie.id}>
+              <div className="watchlist-button-wrapper">
+                <WatchListButton movieId={movie.id} />
+              </div>
+              <Link to={`/detail/${movie.id}?type=${movie.media_type || 'movie'}`}>
+                {movie.poster_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title || movie.name}
+                    onError={createImageErrorHandler(movie.poster_path)}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#333', color: '#fff' }}>No Image</div>
+                )}
+              </Link>
+            </li>
+          ))}
         </ul>
       )}
     </StyledBody>

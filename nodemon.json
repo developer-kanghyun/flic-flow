@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts,tsx,js,jsx,json",
+  "ignore": ["src/**/*.test.*", "node_modules"],
+  "exec": "vite"
+}

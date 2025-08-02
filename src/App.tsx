@@ -5,11 +5,30 @@ import {
   WatchList,
   Recommended,
   Searched,
-  Test,
 } from "@pages/index";
-import { Layouts } from "@components/index";
+import Layouts from "@src/components/layouts/Layouts";
+import { useEffect } from "react";
+import { getMovieGenres, getTvGenres } from "@src/api/tmdbApi";
+import { useFilterStore } from "@src/store/filterStore";
 
 const App = () => {
+  const { setMovieGenres, setTvGenres } = useFilterStore();
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const movieGenres = await getMovieGenres();
+        const tvGenres = await getTvGenres();
+        setMovieGenres(movieGenres);
+        setTvGenres(tvGenres);
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
+
+    fetchGenres();
+  }, [setMovieGenres, setTvGenres]);
+
   return (
     <Routes>
       <Route
@@ -49,14 +68,6 @@ const App = () => {
         element={
           <Layouts>
             <Searched />
-          </Layouts>
-        }
-      />
-      <Route
-        path="/test"
-        element={
-          <Layouts>
-            <Test />
           </Layouts>
         }
       />

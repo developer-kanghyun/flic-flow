@@ -1,8 +1,7 @@
-import React from "react";
 import { StyledLogo } from "./styles";
 
 const Logo = () => {
-  return <StyledLogo to="/">Movie Net</StyledLogo>;
+  return <StyledLogo to="/">Flic Flow</StyledLogo>;
 };
 
 export default Logo;

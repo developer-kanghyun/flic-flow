@@ -1,11 +1,13 @@
-import React from "react";
-import { FilterList } from "@components/index";
+import FilterList from "@src/components/filter-list/FilterList";
+import Accordion from "@src/components/accordion/Accordion";
 import { StyledFilterContainer } from "./styles";
 
 const FilterContainer = () => {
   return (
     <StyledFilterContainer>
-      <FilterList />
+      <Accordion title="서비스 목록">
+        <FilterList />
+      </Accordion>
     </StyledFilterContainer>
   );
 };
