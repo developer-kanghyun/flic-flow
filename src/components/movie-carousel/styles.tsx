@@ -51,20 +51,20 @@ export const CarouselContent = styled.div`
   position: relative;
   overflow: hidden;
   padding: 10px;
-  width: calc(180px * 7 + 16px * 6 + 20px);
+  width: 100%;
+  max-width: calc(180px * 7 + 16px * 6 + 20px);
   margin: 0 auto;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
-    width: calc(160px * 6 + 16px * 5 + 20px);
+    max-width: calc(160px * 6 + 16px * 5 + 20px);
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    width: calc(140px * 5 + 14px * 4 + 20px);
+    max-width: calc(140px * 5 + 14px * 4 + 20px);
     padding: 8px;
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    width: 100%;
     max-width: calc(130px * 3 + 10px * 2 + 20px);
     padding: 6px;
     touch-action: pan-x;
