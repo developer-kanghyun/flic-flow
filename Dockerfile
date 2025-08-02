@@ -11,11 +11,20 @@ COPY package*.json ./
 # 의존성 설치
 RUN npm install
 
-# .env 파일을 포함한 나머지 소스코드 전체 복사
-# 이 시점에 .env 파일이 컨테이너 안으로 들어갑니다.
+# 소스코드 복사 (.env 제외)
 COPY . .
 
-# React 앱 빌드 실행! (이제 컨테이너 안의 .env 파일을 직접 읽어서 빌드함)
+# 빌드 시 필요한 환경 변수 인자 선언
+ARG VITE_TMDB_API_KEY
+ARG VITE_OMDB_API_KEY
+ARG VITE_YOUTUBE_API_KEY
+
+# 받은 인자들을 빌드 환경의 환경 변수로 설정
+ENV VITE_TMDB_API_KEY=$VITE_TMDB_API_KEY
+ENV VITE_OMDB_API_KEY=$VITE_OMDB_API_KEY
+ENV VITE_YOUTUBE_API_KEY=$VITE_YOUTUBE_API_KEY
+
+# React 앱 빌드 실행
 RUN npm run build
 
 
