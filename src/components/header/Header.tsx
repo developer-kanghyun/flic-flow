@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Logo from "@src/components/logo/Logo";
 import SearchBar from "@src/components/search-bar/SearchBar";
 import FilterList from "@src/components/filter-list/FilterList";
@@ -8,18 +8,6 @@ import triangleDown from "@src/imgs/triangleDown.png";
 
 const Header = () => {
   const [isServiceOpen, setIsServiceOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 430);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const toggleService = () => {
     setIsServiceOpen(prev => !prev);
