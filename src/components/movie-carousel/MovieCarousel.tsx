@@ -37,7 +37,7 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  const { itemWidth, visibleItems, maxScroll } = useMemo(() => {
+  const { itemWidth, maxScroll } = useMemo(() => {
     const getConfig = () => {
       if (window.innerWidth <= 480) return CAROUSEL_CONFIG.MOBILE;
       if (window.innerWidth <= 768) return CAROUSEL_CONFIG.TABLET;
@@ -47,7 +47,6 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
     const config = getConfig();
     return {
       itemWidth: config.width,
-      visibleItems: config.visibleItems,
       maxScroll: Math.max(0, (movies.length - config.visibleItems) * config.width),
     };
   }, [movies.length]);
