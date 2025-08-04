@@ -52,20 +52,20 @@ export const CarouselContent = styled.div`
   overflow: hidden;
   padding: 10px;
   width: 100%;
-  max-width: calc(180px * 7 + 16px * 6 + 20px);
+  max-width: calc(180px * 3 + 16px * 2 + 20px);
   margin: 0 auto;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
-    max-width: calc(160px * 6 + 16px * 5 + 20px);
+    max-width: calc(160px * 3 + 16px * 2 + 20px);
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    max-width: calc(140px * 5 + 14px * 4 + 20px);
+    max-width: calc(140px * 3 + 14px * 2 + 20px);
     padding: 8px;
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    max-width: calc(130px * 3 + 10px * 2 + 20px);
+    max-width: calc(130px * 4 + 10px * 3 + 20px);
     padding: 6px;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
@@ -75,7 +75,7 @@ export const CarouselContent = styled.div`
 export const CarouselTrack = styled.div`
   display: flex;
   gap: 16px;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
   will-change: transform;
   
   .carousel-item {

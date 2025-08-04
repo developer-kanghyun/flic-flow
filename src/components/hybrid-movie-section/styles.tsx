@@ -85,10 +85,9 @@ export const FixedGrid = styled.div`
       grid-column: auto;
     }
 
+    /* 모바일에서는 5번째 아이템 숨기기 */
     .grid-item:nth-child(5) {
-      grid-column: 1 / -1;
-      justify-self: center;
-      max-width: 150px;
+      display: none;
     }
   }
 `;

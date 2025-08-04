@@ -15,9 +15,9 @@ interface MovieCarouselProps {
 }
 
 const CAROUSEL_CONFIG = {
-  MOBILE: { width: 130, visibleItems: 3 },
-  TABLET: { width: 156, visibleItems: 5 },
-  DESKTOP: { width: 196, visibleItems: 7 },
+  MOBILE: { width: 130, visibleItems: 4 },
+  TABLET: { width: 156, visibleItems: 3 },
+  DESKTOP: { width: 196, visibleItems: 3 },
 } as const;
 
 const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
@@ -53,20 +53,20 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
   }, [movies.length]);
 
   const scrollLeft = useCallback(() => {
-    const newPosition = Math.max(0, scrollPosition - itemWidth * visibleItems);
+    const newPosition = Math.max(0, scrollPosition - itemWidth);
     setScrollPosition(newPosition);
     if (trackRef.current) {
       trackRef.current.style.transform = `translateX(-${newPosition}px)`;
     }
-  }, [scrollPosition, itemWidth, visibleItems]);
+  }, [scrollPosition, itemWidth]);
 
   const scrollRight = useCallback(() => {
-    const newPosition = Math.min(maxScroll, scrollPosition + itemWidth * visibleItems);
+    const newPosition = Math.min(maxScroll, scrollPosition + itemWidth);
     setScrollPosition(newPosition);
     if (trackRef.current) {
       trackRef.current.style.transform = `translateX(-${newPosition}px)`;
     }
-  }, [scrollPosition, maxScroll, itemWidth, visibleItems]);
+  }, [scrollPosition, maxScroll, itemWidth]);
 
   // 터치/스와이프 기능
   const [touchStart, setTouchStart] = useState<number | null>(null);
