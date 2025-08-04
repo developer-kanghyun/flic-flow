@@ -65,8 +65,12 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT }} # 2222번 포트
+          port: ${{ secrets.SERVER_PORT }}
+          timeout: 60s
+          command_timeout: 10m
           script: |
+            # 스크립트 실행이 끝나면 명시적으로 세션을 종료
+            set -e
             echo "--- Starting deployment on server ---"
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest
             docker stop flic-flow-container || true
@@ -77,3 +81,4 @@ jobs:
               ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest
             docker image prune -f
             echo "--- Deployment finished successfully! ---"
+            exit 0
