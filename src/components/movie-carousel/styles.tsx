@@ -52,15 +52,15 @@ export const CarouselContent = styled.div`
   overflow: hidden;
   padding: 10px;
   width: 100%;
-  max-width: calc(180px * 3 + 16px * 2 + 20px);
+  max-width: calc(180px * 7 + 16px * 6 + 20px);
   margin: 0 auto;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
-    max-width: calc(160px * 3 + 16px * 2 + 20px);
+    max-width: calc(160px * 7 + 16px * 6 + 20px);
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    max-width: calc(140px * 3 + 14px * 2 + 20px);
+    max-width: calc(140px * 5 + 14px * 4 + 20px);
     padding: 8px;
   }
   
@@ -69,13 +69,15 @@ export const CarouselContent = styled.div`
     padding: 6px;
     touch-action: pan-x;
     -webkit-overflow-scrolling: touch;
+    user-select: none;
+    -webkit-user-select: none;
   }
 `;
 
 export const CarouselTrack = styled.div`
   display: flex;
   gap: 16px;
-  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
   will-change: transform;
   
   .carousel-item {

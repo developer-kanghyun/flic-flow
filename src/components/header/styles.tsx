@@ -49,6 +49,19 @@ export const StyledHeader = styled.header`
       gap: ${({ theme }) => theme.spacing.sm};
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: 0 ${({ theme }) => theme.spacing.sm};
+    height: 48px;
+
+    .header-left {
+      gap: ${({ theme }) => theme.spacing.sm};
+    }
+
+    .header-right {
+      gap: ${({ theme }) => theme.spacing.xs};
+    }
+  }
 `;
 
 export const StyledServiceToggle = styled.button<{ $isOpen: boolean }>`
@@ -82,6 +95,16 @@ export const StyledServiceToggle = styled.button<{ $isOpen: boolean }>`
     font-size: 14px;
     padding: 6px 8px;
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: 12px;
+    padding: 4px 6px;
+    
+    img {
+      width: 10px;
+      height: 10px;
+    }
+  }
 `;
 
 export const StyledAccordionContent = styled.div<{ $isOpen: boolean }>`
@@ -105,6 +128,10 @@ export const StyledAccordionContent = styled.div<{ $isOpen: boolean }>`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: ${({ $isOpen }) => ($isOpen ? "20px" : "0 20px")};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ $isOpen }) => ($isOpen ? "16px" : "0 16px")};
   }
 `;
 
@@ -177,6 +204,16 @@ export const StyledWatchListIcon = styled(Link)`
     img {
       width: 18px;
       height: 18px;
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 32px;
+    height: 28px;
+
+    img {
+      width: 16px;
+      height: 16px;
     }
   }
 `;

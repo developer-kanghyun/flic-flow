@@ -16,13 +16,18 @@ interface MovieCarouselProps {
 
 const CAROUSEL_CONFIG = {
   MOBILE: { width: 130, visibleItems: 4 },
-  TABLET: { width: 156, visibleItems: 3 },
-  DESKTOP: { width: 196, visibleItems: 3 },
+  TABLET: { width: 156, visibleItems: 5 },
+  DESKTOP: { width: 196, visibleItems: 7 },
 } as const;
 
 const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 430;
+    }
+    return false;
+  });
   const trackRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   
@@ -45,14 +50,25 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
     };
     
     const config = getConfig();
+    const scrollWidth = config.width + 16; // item width + gap
+    // 모바일에서는 전체 영화를 다 볼 수 있도록 maxScroll 계산
+    const effectiveVisibleItems = window.innerWidth <= 430 ? 1 : config.visibleItems;
     return {
       itemWidth: config.width,
-      maxScroll: Math.max(0, (movies.length - config.visibleItems) * config.width),
+      maxScroll: Math.max(0, (movies.length - effectiveVisibleItems) * scrollWidth),
     };
   }, [movies.length]);
 
   const scrollLeft = useCallback(() => {
-    const newPosition = Math.max(0, scrollPosition - itemWidth);
+    const config = (() => {
+      if (window.innerWidth <= 480) return CAROUSEL_CONFIG.MOBILE;
+      if (window.innerWidth <= 768) return CAROUSEL_CONFIG.TABLET;
+      return CAROUSEL_CONFIG.DESKTOP;
+    })();
+    
+    const scrollWidth = itemWidth + 16; // item width + gap
+    const scrollAmount = scrollWidth * config.visibleItems;
+    const newPosition = Math.max(0, scrollPosition - scrollAmount);
     setScrollPosition(newPosition);
     if (trackRef.current) {
       trackRef.current.style.transform = `translateX(-${newPosition}px)`;
@@ -60,38 +76,57 @@ const MovieCarousel = memo(({ movies, title }: MovieCarouselProps) => {
   }, [scrollPosition, itemWidth]);
 
   const scrollRight = useCallback(() => {
-    const newPosition = Math.min(maxScroll, scrollPosition + itemWidth);
+    const config = (() => {
+      if (window.innerWidth <= 480) return CAROUSEL_CONFIG.MOBILE;
+      if (window.innerWidth <= 768) return CAROUSEL_CONFIG.TABLET;
+      return CAROUSEL_CONFIG.DESKTOP;
+    })();
+    
+    const scrollWidth = itemWidth + 16; // item width + gap
+    const scrollAmount = scrollWidth * config.visibleItems;
+    const newPosition = Math.min(maxScroll, scrollPosition + scrollAmount);
     setScrollPosition(newPosition);
     if (trackRef.current) {
       trackRef.current.style.transform = `translateX(-${newPosition}px)`;
     }
   }, [scrollPosition, maxScroll, itemWidth]);
 
-  // 터치/스와이프 기능
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  // 터치/드래그 기능
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState<number | null>(null);
+  const [initialScrollPosition, setInitialScrollPosition] = useState(0);
 
   const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(true);
+    setDragStart(e.targetTouches[0].clientX);
+    setInitialScrollPosition(scrollPosition);
+    // transition 비활성화 (드래그 중에는 즉시 반응)
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'none';
+    }
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (!isDragging || dragStart === null) return;
+    
+    const currentX = e.targetTouches[0].clientX;
+    const deltaX = dragStart - currentX; // 드래그한 거리
+    // 드래그 감도를 1.5배로 적절하게 조정
+    const amplifiedDelta = deltaX * 1.5;
+    const newPosition = Math.max(0, Math.min(maxScroll, initialScrollPosition + amplifiedDelta));
+    
+    setScrollPosition(newPosition);
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(-${newPosition}px)`;
+    }
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe && scrollPosition < maxScroll) {
-      scrollRight();
-    }
-    if (isRightSwipe && scrollPosition > 0) {
-      scrollLeft();
+    setIsDragging(false);
+    setDragStart(null);
+    // transition 다시 활성화
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
     }
   };
 

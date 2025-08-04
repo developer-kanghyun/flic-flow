@@ -2,12 +2,11 @@ import { styled } from "styled-components";
 
 export const StyledMoviePlayer = styled.div`
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-  height: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  max-width: 100%;
   background-color: #000;
-  border-radius: 8px;
+  border-radius: inherit;
 
   iframe {
     position: absolute;
@@ -16,6 +15,7 @@ export const StyledMoviePlayer = styled.div`
     width: 100%;
     height: 100%;
     border: 0;
+    border-radius: inherit;
   }
 `;
 

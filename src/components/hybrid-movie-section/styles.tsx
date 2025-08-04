@@ -80,14 +80,15 @@ export const FixedGrid = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     grid-template-columns: repeat(2, 1fr);
+    gap: ${({ theme }) => theme.spacing.sm};
 
+    /* 모바일에서는 특별한 배치 규칙 제거 */
     .grid-item:nth-child(4) {
       grid-column: auto;
     }
 
-    /* 모바일에서는 5번째 아이템 숨기기 */
     .grid-item:nth-child(5) {
-      display: none;
+      grid-column: auto;
     }
   }
 `;
@@ -111,11 +112,11 @@ export const CarouselWrapper = styled.div`
     overflow: hidden;
 
     @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-      width: calc(155px * 7 + 16px * 6 + 20px); /* 태블릿에서 7개 카드 */
+      width: calc(140px * 5 + 16px * 4 + 20px); /* 태블릿에서 5개 카드 */
     }
 
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-      width: calc(130px * 5 + 16px * 4 + 20px); /* 모바일에서 5개 카드 */
+      width: calc(130px * 4 + 16px * 3 + 20px); /* 모바일에서 4개 카드 */
     }
   }
 `;

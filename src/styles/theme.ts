@@ -26,7 +26,7 @@ export const theme = {
   },
   
   breakpoints: {
-    mobile: '390px',     // iPhone 12 Pro
+    mobile: '430px',     // iPhone 16 Pro Max
     tablet: '1024px',    // iPad Pro 11"
     desktop: '1366px',   // iPad Pro 12.9" / Desktop
   },
