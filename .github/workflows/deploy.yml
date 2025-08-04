@@ -1,39 +1,28 @@
 # 워크플로우 이름
 name: CI/CD for Flic Flow
 
-# 워크플로우 실행 조건: main 브랜치에 push가 발생했을 때만 실행
+# 실행 조건 (Main branch로 push 했을 때,)
 on:
   push:
     branches:
       - main
 
 jobs:
-  # 1. 빌드 및 테스트 잡 (Build and Test Job)
+  # 빌드 및 테스트 잡
   build_and_test:
-    runs-on: ubuntu-latest # GitHub 제공 가상머신에서 실행
-
+    runs-on: ubuntu-latest
     steps:
-      # 1-1. 소스코드 가져오기
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # 1-2. GitHub Secrets를 사용하여 .env 파일 생성
-      # 빌드 과정에서 환경 변수를 읽기 위해 필요
       - name: Create .env file for build
         run: |
           echo "VITE_TMDB_API_KEY=${{ secrets.VITE_TMDB_API_KEY }}" > .env
-          echo "VITE_OMDB_API_KEY=${{ secrets.VITE_OMDB_API_KEY }}" >> .env
-          echo "VITE_YOUTUBE_API_KEY=${{ secrets.VITE_YOUTUBE_API_KEY }}" >> .env
-
-      # 1-3. Docker Buildx 설정 (멀티 플랫폼 빌드 지원)
+          echo "VITE_OMDB_API_KEY=${{ secrets.VOTE_OMDB_API_KEY }}" >> .env
+          echo "VITE_YOUTUBE_API_KEY=${{ secrets.VOTE_YOUTUBE_API_KEY }}" >> .env
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # 1-4. Docker 이미지 빌드
       - name: Build Docker image for testing
         run: docker build -t temp-flic-flow-test:latest .
-
-      # 1-5. 빌드된 이미지로 간단한 테스트 실행
       - name: Run a simple test on the built image
         run: |
           docker run -d -p 8080:80 --name test-container temp-flic-flow-test:latest
@@ -45,24 +34,20 @@ jobs:
           docker stop test-container
           docker rm test-container
 
-  # 2. Docker Hub 배포 잡 (SSH 배포 제거)
+  # 배포 잡 (Deploy Job)
   deploy:
     needs: build_and_test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Build and push image to Docker Hub
         uses: docker/build-push-action@v5
         with:
@@ -71,14 +56,24 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest
           build-args: |
             VITE_TMDB_API_KEY=${{ secrets.VITE_TMDB_API_KEY }}
-            VITE_OMDB_API_KEY=${{ secrets.VITE_OMDB_API_KEY }}
-            VITE_YOUTUBE_API_KEY=${{ secrets.VITE_YOUTUBE_API_KEY }}
-            
-      - name: Deployment Instructions
-        run: |
-          echo "🚀 Docker image successfully built and pushed to Docker Hub!"
-          echo "📝 To deploy manually on your server, run:"
-          echo "docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest"
-          echo "docker stop flic-flow-container || true"
-          echo "docker rm flic-flow-container || true"
-          echo "docker run -d -p 127.0.0.1:8080:80 --name flic-flow-container --restart=unless-stopped ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest"
+            VITE_OMDB_API_KEY=${{ secrets.VOTE_OMDB_API_KEY }}
+            VITE_YOUTUBE_API_KEY=${{ secrets.VOTE_YOUTUBE_API_KEY }}
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }} # 2222번 포트
+          script: |
+            echo "--- Starting deployment on server ---"
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest
+            docker stop flic-flow-container || true
+            docker rm flic-flow-container || true
+            docker run -d -p 127.0.0.1:8080:80 \
+              --name flic-flow-container \
+              --restart=unless-stopped \
+              ${{ secrets.DOCKER_HUB_USERNAME }}/flic-flow:latest
+            docker image prune -f
+            echo "--- Deployment finished successfully! ---"
