@@ -8,9 +8,10 @@ import { getMediaType, getMovieTitle } from "@src/utils/movieHelpers";
 
 interface MovieCardProps {
   movie: Movie;
+  priority?: boolean; // 첫 번째 이미지들은 즉시 로드
 }
 
-const MovieCard = memo(({ movie }: MovieCardProps) => {
+const MovieCard = memo(({ movie, priority = false }: MovieCardProps) => {
   const posterUrl = getPosterUrl(movie.poster_path);
   const mediaType = getMediaType(movie);
   const detailUrl = `/detail/${movie.id}?type=${mediaType}`;
@@ -26,7 +27,7 @@ const MovieCard = memo(({ movie }: MovieCardProps) => {
           <img
             src={posterUrl}
             alt={title || "Movie"}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
             onError={createImageErrorHandler(movie.poster_path || undefined)}
           />
         ) : (

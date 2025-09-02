@@ -50,9 +50,9 @@ const HybridMovieSection = ({ movies, title }: HybridMovieSectionProps) => {
         // 모바일: 4개 고정 그리드 + 나머지 슬라이드
         <>
           <FixedGrid>
-            {firstMovies.map((movie) => (
+            {firstMovies.map((movie, index) => (
               <div key={movie.id} className="grid-item">
-                <MovieCard movie={movie} />
+                <MovieCard movie={movie} priority={index < 4} />
               </div>
             ))}
           </FixedGrid>
@@ -67,9 +67,9 @@ const HybridMovieSection = ({ movies, title }: HybridMovieSectionProps) => {
         // 데스크톱/태블릿: 기존 방식 (고정 그리드 + 캐러셀)
         <>
           <FixedGrid>
-            {firstMovies.map((movie) => (
+            {firstMovies.map((movie, index) => (
               <div key={movie.id} className="grid-item">
-                <MovieCard movie={movie} />
+                <MovieCard movie={movie} priority={index < 4} />
               </div>
             ))}
           </FixedGrid>
