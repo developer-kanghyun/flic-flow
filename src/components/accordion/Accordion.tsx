@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
-import triangleDown from "@src/imgs/triangleDown.png";
+import triangleDown from "@src/imgs/triangleDown.webp";
 import {
   StyledAccordion,
   StyledAccordionContent,

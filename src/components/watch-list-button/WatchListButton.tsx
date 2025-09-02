@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { StyledWatchListButton } from "./styles";
 import heartIcon from "@src/imgs/heart.svg";
-import greyHeart from "@src/imgs/greyheart.png";
+import greyHeart from "@src/imgs/greyheart.webp";
 
 interface WatchListButtonProps {
   movieId: number;

@@ -3,8 +3,8 @@ import Logo from "@src/components/logo/Logo";
 import SearchBar from "@src/components/search-bar/SearchBar";
 import FilterList from "@src/components/filter-list/FilterList";
 import { StyledHeader, StyledWatchListIcon, StyledHeaderContainer, StyledServiceToggle, StyledAccordionContent } from "./styles";
-import heartIcon from "@src/imgs/greyheart.png";
-import triangleDown from "@src/imgs/triangleDown.png";
+import heartIcon from "@src/imgs/greyheart.webp";
+import triangleDown from "@src/imgs/triangleDown.webp";
 
 const Header = () => {
   const [isServiceOpen, setIsServiceOpen] = useState(false);
