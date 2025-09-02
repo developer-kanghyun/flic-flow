@@ -107,6 +107,7 @@ const MovieMetadata = memo(({ movie, ratings, watchProviders }: MovieMetadataPro
                   src={`https://image.tmdb.org/t/p/w45${provider.logo_path}`}
                   alt={provider.provider_name}
                   className="provider-logo"
+                  loading="lazy"
                 />
                 <span>{provider.provider_name}</span>
               </a>

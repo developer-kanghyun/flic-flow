@@ -116,6 +116,7 @@ const MovieHero = memo(({
                         src={`https://image.tmdb.org/t/p/w92${firstProvider.logo_path}`}
                         alt={firstProvider.provider_name}
                         className="ott-logo"
+                        loading="lazy"
                       />
                     </a>
                   );

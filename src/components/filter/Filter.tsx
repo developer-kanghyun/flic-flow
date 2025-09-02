@@ -14,7 +14,7 @@ const Filter = (props: FilterProps) => {
 
   return (
     <StyledFilter onClick={() => handleChangeFilter(filterKey)} $active={active ? "true" : undefined}>
-      <img src={active ? imgOn : imgOff} alt={label} />
+      <img src={active ? imgOn : imgOff} alt={label} loading="lazy" />
       <span>{label}</span>
     </StyledFilter>
   );

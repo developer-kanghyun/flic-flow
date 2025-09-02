@@ -88,6 +88,7 @@ const Detail = () => {
                         src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
                         alt={actor.name}
                         className="cast-photo"
+                        loading="lazy"
                       />
                     )}
                     <div className="cast-info">

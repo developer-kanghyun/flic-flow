@@ -16,7 +16,7 @@ const OttLink = ({ providerName, logoPath, link, movieTitle, type }: OttLinkProp
   return (
     <StyledOttLink href={finalLink} target="_blank" rel="noopener noreferrer">
       <div className="provider-info">
-        <img src={`https://image.tmdb.org/t/p/original${logoPath}`} alt={providerName} />
+        <img src={`https://image.tmdb.org/t/p/original${logoPath}`} alt={providerName} loading="lazy" />
         <div className="provider-text">
           <span className="provider-name">{providerName}</span>
           {type && <span className="provider-type">{type}</span>}

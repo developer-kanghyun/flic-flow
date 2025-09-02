@@ -11,6 +11,19 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+        },
+      },
+    },
+    cssCodeSplit: true,
+    sourcemap: false,
+  },
   resolve: {
     alias: [
       {

@@ -26,6 +26,7 @@ const MovieCast = memo(({ credits }: MovieCastProps) => {
                 src={`https://image.tmdb.org/t/p/w185${director.profile_path}`}
                 alt={director.name}
                 className="cast-photo"
+                loading="lazy"
               />
             )}
             <div className="cast-info">
@@ -47,6 +48,7 @@ const MovieCast = memo(({ credits }: MovieCastProps) => {
                     src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
                     alt={actor.name}
                     className="cast-photo"
+                    loading="lazy"
                   />
                 )}
                 <div className="cast-info">
