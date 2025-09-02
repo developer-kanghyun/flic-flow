@@ -52,7 +52,7 @@ const HybridMovieSection = ({ movies, title }: HybridMovieSectionProps) => {
           <FixedGrid>
             {firstMovies.map((movie, index) => (
               <div key={movie.id} className="grid-item">
-                <MovieCard movie={movie} priority={index < 4} />
+                <MovieCard movie={movie} priority={index === 0} />
               </div>
             ))}
           </FixedGrid>
@@ -69,7 +69,7 @@ const HybridMovieSection = ({ movies, title }: HybridMovieSectionProps) => {
           <FixedGrid>
             {firstMovies.map((movie, index) => (
               <div key={movie.id} className="grid-item">
-                <MovieCard movie={movie} priority={index < 4} />
+                <MovieCard movie={movie} priority={index === 0} />
               </div>
             ))}
           </FixedGrid>
